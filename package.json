@@ -1,0 +1,25 @@
+{
+  "name": "epic-padel-react",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "@fontsource/lexend": "^5.2.11",
+    "@fontsource/sulphur-point": "^5.2.7",
+    "@vitejs/plugin-react": "latest",
+    "lucide-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "vite": "latest"
+  },
+  "devDependencies": {
+    "autoprefixer": "latest",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
+  }
+}

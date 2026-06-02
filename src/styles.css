@@ -1,0 +1,112 @@
+@import "@fontsource/lexend/300.css";
+@import "@fontsource/lexend/400.css";
+@import "@fontsource/lexend/500.css";
+@import "@fontsource/lexend/600.css";
+@import "@fontsource/lexend/700.css";
+@import "@fontsource/lexend/800.css";
+@import "@fontsource/lexend/900.css";
+@import "@fontsource/sulphur-point/300.css";
+@import "@fontsource/sulphur-point/400.css";
+@import "@fontsource/sulphur-point/700.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .font-sans {
+    font-family: "Lexend", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  .font-display {
+    font-family: "Sulphur Point", "Lexend", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  .text-epic-pink {
+    color: #FAD7D3;
+  }
+
+  .text-epic-cream {
+    color: #FFFCF2;
+  }
+
+  .text-epic-green {
+    color: #154527;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #FFFCF2;
+  color: #154527;
+  font-family: "Lexend", ui-sans-serif, system-ui, sans-serif;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.location-carousel-track {
+  animation: location-carousel-scroll 38s linear infinite;
+}
+
+.facility-carousel-track {
+  animation: facility-carousel-scroll 34s linear infinite;
+}
+
+.facility-mobile-carousel-track {
+  animation: facility-mobile-carousel-scroll 28s linear infinite;
+}
+
+.location-carousel-track:hover,
+.facility-carousel-track:hover,
+.facility-mobile-carousel-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes location-carousel-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(calc(-50% - 12px), 0, 0);
+  }
+}
+
+@keyframes facility-carousel-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(calc(-50% - 36px), 0, 0);
+  }
+}
+
+@keyframes facility-mobile-carousel-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(calc(-50% - 14px), 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .location-carousel-track,
+  .facility-carousel-track,
+  .facility-mobile-carousel-track {
+    animation: none;
+  }
+}
