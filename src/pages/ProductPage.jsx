@@ -9,7 +9,7 @@ const ProductPage = () => {
   const product = products[0];
 
   return (
-    <main className="bg-[#FFFCF2] text-[#154527]">
+    <main className="bg-white text-[#154527]">
       <section className="relative px-8 pb-24 pt-32 md:px-12">
         <SiteHeader />
         <div className="mx-auto grid max-w-[1340px] gap-12 md:grid-cols-2">

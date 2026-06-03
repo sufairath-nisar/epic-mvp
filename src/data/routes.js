@@ -5,7 +5,7 @@ export const mainNavigation = [
   },
   {
     label: "find epic",
-    path: "/find-epic/charlotte"
+    path: "/find-epic"
   },
   {
     label: "join epic",
@@ -31,8 +31,8 @@ export const appRoutes = [
     title: "Journal Article"
   },
   {
-    path: "/find-epic/charlotte",
-    title: "Find Epic Charlotte"
+    path: "/find-epic",
+    title: "Find Epic"
   },
   {
     path: "/join-epic",

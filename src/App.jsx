@@ -11,6 +11,7 @@ import CartPage from "./pages/CartPage";
 import BookingPage from "./pages/BookingPage";
 import ProfilePage from "./pages/ProfilePage";
 import InvestmentsPage from "./pages/InvestmentsPage";
+import MembershipCheckoutPage from "./pages/MembershipCheckoutPage";
 
 const AppRoutes = () => {
   const { path } = useRouter();
@@ -22,7 +23,8 @@ const AppRoutes = () => {
   if (path === "/our-story") return <StoryPage />;
   if (path === "/our-journal") return <JournalPage />;
   if (path === "/our-journal/blog") return <ArticlePage />;
-  if (path === "/find-epic/charlotte") return <FindEpicPage />;
+  if (path === "/find-epic") return <FindEpicPage />;
+  if (path === "/join-epic/membership/checkout") return <MembershipCheckoutPage />;
   if (path === "/join-epic" || path === "/join-epic/otp" || path.startsWith("/join-epic/membership")) return <JoinEpicPage />;
   if (path === "/wear-epic" || path === "/wear-epic/all") return <WearEpicPage />;
   if (path === "/wear-epic/product") return <ProductPage />;

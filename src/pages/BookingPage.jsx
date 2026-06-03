@@ -8,7 +8,7 @@ const BookingPage = ({ mode = "default" }) => {
   const isConfirmation = mode === "confirmation";
 
   return (
-    <main className="min-h-screen bg-[#FFFCF2] text-[#154527]">
+    <main className="min-h-screen bg-white text-[#154527]">
       <section className="relative px-8 pb-24 pt-32 md:px-12">
         <SiteHeader />
         <div className="mx-auto max-w-[1100px]">

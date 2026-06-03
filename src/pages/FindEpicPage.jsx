@@ -1,43 +1,244 @@
-import PageHero from "../components/common/PageHero";
+import { useState } from "react";
+import ArrowCircle from "../components/common/ArrowCircle";
+import F31Header from "../components/f31/F31Header";
+import { BookCourtCta } from "../components/f31/HeroCtas";
 import SiteFooter from "../components/layout/SiteFooter";
+import RotatingImage from "../components/common/RotatingImage";
+import BookingExperienceSection from "../components/sections/BookingExperienceSection";
+import FacilitiesSection from "../components/sections/FacilitiesSection";
+import MembershipsSection from "../components/sections/MembershipsSection";
+import MembersTestimonialsSection from "../components/sections/MembersTestimonialsSection";
+import TeamSection from "../components/sections/TeamSection";
 import { ASSET_PATH } from "../constants/assets";
-import { locations, membershipPlans } from "../data/siteContent";
+import { f31HomepageData } from "../data/f31Homepage";
+import { mainNavigation } from "../data/routes";
+import { teamMembers } from "../data/siteContent";
+import { useSequentialImagePairs } from "../hooks/useSequentialImagePairs";
 import { Link } from "../router/RouterProvider";
 
-const FindEpicPage = () => {
-  const location = locations[0];
+const findEpicHero = {
+  eyebrow: "Padel finds its pulse in Charlotte",
+  media: {
+    type: "video",
+    src: "",
+    poster: "",
+    label: "Charlotte location video"
+  }
+};
+
+const findEpicFacilities = [
+  { label: "5 PADEL COURTS", icon: "find-epic-facility-padel-courts.svg" },
+  { label: "10 TENNIS COURTS", icon: "find-epic-facility-tennis-courts.svg" },
+  { label: "4 PICKLEBALL COURTS", icon: "find-epic-facility-pickleball-courts.svg" },
+  { label: "FITNESS CENTER", icon: "find-epic-facility-fitness-center.svg" },
+  { label: "LOCKER ROOM", icon: "find-epic-facility-locker-room.svg" },
+  { label: "PREMIUM SHOWERS", icon: "find-epic-facility-premium-showers.svg" },
+  { label: "CAFE & JUICE BAR", icon: "find-epic-facility-cafe.svg" },
+  { label: "COWORKING & LOUNGE SPACES", icon: "find-epic-facility-lounge.svg" }
+];
+
+const findEpicMemberships = [
+  {
+    name: "founding",
+    badge: "50% off - 15 of 50 left",
+    audience: ["Limited time", "Founding member pricing"],
+    price: "$149",
+    period: "/month for First 3 Months",
+    billing: "or $2958 billed annually",
+    highlight: "#FCEFA7",
+    benefits: [
+      "All inclusive court access",
+      "Zero booking fees",
+      "Free rentals",
+      "2 guests per month",
+      "15% off lessons, clinics & tournaments",
+      "Access to exclusive events",
+      "Epic welcome pack",
+      "1 year contract"
+    ]
+  },
+  {
+    name: "epic junior",
+    audience: ["for young athletes", "under 17 y.o"],
+    price: "$59",
+    period: "/month",
+    billing: "or $675 billed annually",
+    highlight: "#FAD7D3",
+    benefits: [
+      "1 90-minute court session / week (off-peak only)",
+      "1 peak-time session / week",
+      "Special rate on extra court sessions",
+      "Book up to 5 days in advance",
+      "5% off private lessons & junior clinics",
+      "Access to junior tournaments & development programs"
+    ]
+  },
+  {
+    name: "padel+",
+    audience: ["single", "under 40 y.o"],
+    price: "$80",
+    period: "/month",
+    billing: "or $912 billed annually",
+    highlight: "#154527",
+    benefits: [
+      "Full facilities access",
+      "Special rate on wellness & recovery: cold plunge & sauna",
+      "Zero booking fees for padel & pickleball",
+      "Special rates for tennis courts",
+      "Book up to 7 days in advance",
+      "Access to member events",
+      "Special rates on programs & lessons"
+    ]
+  }
+];
+
+const santiago = {
+  name: "Santiago",
+  role: "Director of Racquet Sports",
+  image: "team-sam.png",
+  summary: "Leads coaching programs, player development, and training initiatives for all racquet sports."
+};
+
+const findEpicTeamMembers = [santiago, ...teamMembers.slice(0, 2)];
+
+const findEpicFacilitiesDescription = (
+  <>
+    The club is fully equipped to support both play and downtime, with indoor courts, locker and refresh areas, a dedicated fitness center, and comfortable locker rooms with showers.
+    <br />
+    <br />
+    On-site cafe and juice bar options make it easy to refuel between sessions, while shared workspaces and retail touches round out the experience, creating a warm designed for full days, not just match time.
+  </>
+);
+
+const FindEpicHeroMedia = ({ media }) => {
+  if (media?.type === "video" && media.src) {
+    return (
+      <video
+        className="absolute inset-0 h-full w-full object-cover"
+        src={`${ASSET_PATH}${media.src}`}
+        poster={media.poster ? `${ASSET_PATH}${media.poster}` : undefined}
+        aria-label={media.label}
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
+    );
+  }
 
   return (
-    <main className="bg-[#FFFCF2] text-[#154527]">
-      <PageHero image="home-location-2.png" title="find epic" subtitle={location.title} dark />
-      <section className="px-8 py-24 md:px-12">
-        <div className="mx-auto grid max-w-[1340px] gap-12 md:grid-cols-[0.7fr_1fr]">
-          <h2 className="text-[70px] font-semibold leading-[0.95] tracking-[-0.06em] text-epic-pink">our<br />location</h2>
-          <div>
-            <p className="max-w-3xl text-[17px] leading-8">{location.description}</p>
-            <div className="mt-10 grid gap-4 md:grid-cols-4">
-              {location.stats.map((stat) => <div key={stat} className="rounded-full border border-[#154527] px-5 py-3 text-center text-xs font-bold uppercase">{stat}</div>)}
-            </div>
+    <>
+      <div className="absolute inset-0 bg-[#1a1a1a]" aria-hidden="true" />
+      <p className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-[8px] font-light lowercase tracking-[0] text-[#FFFCF2] md:top-[340px] md:translate-y-0 md:text-[10px]">
+        location video placeholder
+      </p>
+    </>
+  );
+};
+
+const FindEpicHero = ({ hero = findEpicHero }) => (
+  <section className="relative h-[164vw] min-h-[560px] max-h-[690px] overflow-hidden bg-[#1a1a1a] md:h-[820px] md:min-h-0 md:max-h-none">
+    <FindEpicHeroMedia media={hero.media} />
+    <F31Header navigation={mainNavigation} />
+    <div className="absolute bottom-6 left-4 z-10 md:bottom-[152px] md:left-[50px]">
+      <h1 className="max-w-[280px] text-[13px] font-light uppercase leading-[1.1] tracking-[0] text-[#fff4a8] md:max-w-[560px] md:text-[26px]">
+        {hero.eyebrow}
+      </h1>
+      <div className="mt-2 flex items-start gap-2 md:mt-3 md:gap-4">
+        <BookCourtCta />
+        <Link to="/join-epic/membership" className="flex h-[22px] w-[116px] items-center justify-center rounded-full border border-[#fff2a8] text-[8px] font-normal uppercase leading-none tracking-[0] text-[#fff2a8] transition hover:border-[#154527] hover:bg-[#154527] hover:text-[#fff2a8] md:h-[34px] md:w-[178px] md:text-[15px]">
+          View Memberships
+        </Link>
+      </div>
+    </div>
+  </section>
+);
+
+const PageHeading = ({ children, className = "" }) => (
+  <h2 className={`font-display font-bold leading-[0.9] tracking-[0] text-[#FAD7D3] ${className}`}>
+    {children}
+  </h2>
+);
+
+const LocationIntro = ({ locations }) => {
+  const [locationIndex, setLocationIndex] = useState(0);
+  const activeImageIndexes = useSequentialImagePairs(locations.length, 1200);
+  const activeLocation = locations[locationIndex];
+  const visibleLocations = [locations[locationIndex], locations[(locationIndex + 1) % locations.length]];
+  const showNextLocationPair = () => setLocationIndex((current) => (current + 1) % locations.length);
+
+  return (
+    <section className="bg-white px-4 py-6 text-[#154527] md:px-[50px] md:pb-[85px] md:pt-[86px]">
+      <div className="mx-auto max-w-[1340px]">
+        <div className="grid gap-4 md:grid-cols-[560px_1fr] md:items-start md:gap-[118px]">
+          <PageHeading className="text-[35px] md:text-[86px]">
+            our
+            <br />
+            location
+          </PageHeading>
+          <div className="max-w-[640px] md:mt-0">
+            <p className="text-[9px] font-light leading-[14px] text-[#154527] md:text-[13px] md:leading-[19px]">
+              Epic Padel Charlotte is where the city comes to play, connect, and move together. Located at Prosperity Athletic Club, this outdoor yet secure blend helps local players compete with an ease, social energy that makes the court as good off court as it does on it.
+            </p>
+            <p className="mt-3 text-[9px] font-light leading-[14px] text-[#154527] md:text-[13px] md:leading-[19px]">
+              With purpose-built courts, thoughtful amenities, and a community-first atmosphere, Charlotte is designed for players of all levels: from first-time hitters to regular competitors. It's a place to rally after work, spend weekends with friends and family, and feel part of something bigger than just the game.
+            </p>
+            <p className="mt-3 text-[9px] font-light leading-[14px] text-[#154527] md:text-[13px] md:leading-[19px]">
+              This is padel, Charlotte-style: welcoming, active, and full of pulse.
+            </p>
           </div>
         </div>
-        <div className="mx-auto mt-16 grid max-w-[1340px] gap-6 md:grid-cols-2">
-          <img src={`${ASSET_PATH}home-location-1.png`} alt="Charlotte courts" className="aspect-[1.3] w-full object-cover" />
-          <img src={`${ASSET_PATH}home-location-brand.png`} alt="Epic club" className="aspect-[1.3] w-full object-cover" />
+
+        <div className="mt-5 md:hidden">
+          <RotatingImage
+            images={activeLocation.images}
+            alt={activeLocation.city}
+            activeIndex={activeImageIndexes[locationIndex]}
+            className="group aspect-[298/372] w-full bg-[#e5e2d8]"
+          />
+          <div className="mt-5 flex justify-center">
+            <ArrowCircle label="Show next location" onClick={showNextLocationPair} size="sm" tone="pink" />
+          </div>
         </div>
-      </section>
-      <section className="bg-[#154527] px-8 py-20 text-[#fff4a8] md:px-12">
-        <div className="mx-auto grid max-w-[1340px] gap-8 md:grid-cols-3">
-          {membershipPlans.map((plan) => (
-            <article key={plan.name} className="rounded-2xl bg-[#FFFCF2] p-8 text-[#154527]">
-              {plan.badge && <span className="rounded-full bg-[#fff4a8] px-4 py-2 text-[11px] font-bold uppercase">{plan.badge}</span>}
-              <h3 className="mt-6 text-3xl font-semibold lowercase">{plan.name}</h3>
-              <p className="mt-2 text-sm">{plan.audience}</p>
-              <p className="mt-8 text-4xl font-bold">{plan.price}<span className="text-sm font-medium"> /month</span></p>
-              <Link to="/join-epic/membership" className="mt-8 inline-flex w-full justify-center rounded-full bg-[#154527] py-3 text-xs font-bold uppercase text-[#fff4a8]">Select plan</Link>
-            </article>
+
+        <div className="relative mt-5 hidden gap-4 md:mt-[86px] md:grid md:grid-cols-[440px_1fr] md:items-start md:gap-4 md:pr-[52px]">
+          {visibleLocations.map((location, index) => (
+            <RotatingImage
+              key={`${location.id}-${index}`}
+              images={location.images}
+              alt={location.city}
+              activeIndex={activeImageIndexes[(locationIndex + index) % locations.length]}
+              className="group aspect-[298/372] w-full bg-[#e5e2d8] md:h-[535px] md:aspect-auto"
+            />
           ))}
+          <ArrowCircle className="absolute bottom-2 right-0 flex" label="Show next location" onClick={showNextLocationPair} size="sm" tone="pink" />
         </div>
-      </section>
+      </div>
+    </section>
+  );
+};
+
+const BillboardSection = () => (
+  <section className="bg-white">
+    <div className="h-[40px] bg-white md:h-[65px]" />
+    <img src={`${ASSET_PATH}mobile-location-billboard.png`} alt="Epic billboard" className="w-full object-cover object-center md:hidden" />
+    <img src={`${ASSET_PATH}home-billboard.png`} alt="Epic billboard" className="hidden h-[760px] w-full object-cover object-center md:block" />
+  </section>
+);
+
+const FindEpicPage = () => {
+  const { sportTabs, bookingTabs } = f31HomepageData;
+
+  return (
+    <main className="min-h-screen bg-white font-sans text-[#154527]">
+      <FindEpicHero />
+      <LocationIntro locations={f31HomepageData.locations} />
+      <FacilitiesSection description={findEpicFacilitiesDescription} facilities={findEpicFacilities} variant="findEpic" />
+      <BillboardSection />
+      <MembershipsSection plans={findEpicMemberships} />
+      <BookingExperienceSection bookingTabs={bookingTabs} sportTabs={sportTabs} variant="findEpic" />
+      <TeamSection members={findEpicTeamMembers} spacing="compact" variant="story" />
+      <MembersTestimonialsSection testimonials={f31HomepageData.testimonials} variant="home" />
       <SiteFooter />
     </main>
   );

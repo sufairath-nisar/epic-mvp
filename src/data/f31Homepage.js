@@ -8,7 +8,7 @@ export const f31HomepageData = {
       city: "CHARLOTTE, NC",
       image: "home-location-1.png",
       images: ["home-location-1.png", "location-carousel-player.png"],
-      path: "/find-epic/charlotte",
+      path: "/find-epic",
       description:
         "Epic Padel is Open Now at Prosperity Athletic Club's outdoor padel courts, flexible membership plans, and a vibrant community waiting for you.",
       cta: "VIEW MEMBERSHIPS"
@@ -62,16 +62,16 @@ export const f31HomepageData = {
   bookingTabs: ["BOOK A COURT", "PROGRAMS", "LESSONS", "INSTRUCTORS", "FIND A MATCH"],
   testimonials: [
     {
-      quote: "Epic Padel's ability to merge innovation with traditional racquet sports values is exactly what our industry needs.",
-      author: "Boris Fetbroyt"
+      quote: "Epic1 Padel's ability to merge innovation with traditional racquet sports values is exactly what our industry needs.",
+      author: "Boris Fetbroyt1"
     },
     {
-      quote: "Epic Padel's ability to merge innovation with traditional racquet sports values is exactly what our industry needs.",
-      author: "Boris Fetbroyt"
+      quote: "Epic2 Padel's ability to merge innovation with traditional racquet sports values is exactly what our industry needs.",
+      author: "Boris Fetbroyt2"
     },
     {
-      quote: "Epic Padel's ability to merge innovation with traditional racquet sports values is exactly what our industry needs.",
-      author: "Boris Fetbroyt"
+      quote: "Epic3 Padel's ability to merge innovation with traditional racquet sports values is exactly what our industry needs.",
+      author: "Boris Fetbroyt3"
     }
   ],
   footer: {

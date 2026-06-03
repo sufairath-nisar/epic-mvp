@@ -3,7 +3,7 @@ import SiteFooter from "../components/layout/SiteFooter";
 
 const InvestmentsPage = () => {
   return (
-    <main className="bg-[#FFFCF2] text-[#154527]">
+    <main className="bg-white text-[#154527]">
       <PageHero title="our investments" subtitle="Ecosystem" />
       <section className="px-8 py-24 md:px-12">
         <div className="mx-auto grid max-w-[1100px] gap-8 md:grid-cols-3">

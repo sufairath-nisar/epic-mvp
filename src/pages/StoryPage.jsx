@@ -1,35 +1,92 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import ArrowCircle from "../components/common/ArrowCircle";
 import F31Header from "../components/f31/F31Header";
 import SiteFooter from "../components/layout/SiteFooter";
+import TeamSection from "../components/sections/TeamSection";
 import { ASSET_PATH } from "../constants/assets";
 import { mainNavigation } from "../data/routes";
 import { storyLinks, teamMembers } from "../data/siteContent";
-import { Link } from "../router/RouterProvider";
 
-const StoryHero = () => {
+const storyDetails = {
+  "What is Epic":
+    "We're building more than clubs. We're building community-led spaces defined by movement, connection, and shared energy.",
+  "Why Epic":
+    "To put padel, play, and club life in a more accessible, social, and elevated setting that fits modern city life.",
+  "The ones behind Epic":
+    "Behind Epic Padel is a team of builders, operators, and padel believers creating experiences that make people want to return."
+};
+
+const StoryHero = () => (
+  <section className="relative h-[132vw] min-h-[430px] max-h-[520px] overflow-hidden bg-[#143c25] md:h-[clamp(560px,56.944vw,820px)] md:min-h-0 md:max-h-none">
+    <img src={`${ASSET_PATH}story-hero-mobile.png`} alt="Epic Padel club wall" className="h-full w-full object-cover object-center md:hidden" />
+    <img src={`${ASSET_PATH}story-hero.png`} alt="Epic Padel club wall" className="hidden h-full w-full object-cover object-center md:block" />
+    <F31Header navigation={mainNavigation} />
+  </section>
+);
+
+const SectionHeading = ({ children, className = "" }) => (
+  <h1 className={`font-display font-bold leading-[0.92] tracking-[0] text-[#FAD7D3] ${className}`}>
+    {children}
+  </h1>
+);
+
+const StoryAccordionItem = ({ isOpen, isVisited, item, onToggle }) => {
+  const arrowTone = isOpen || isVisited ? "pinkWhite" : "yellow";
+
   return (
-    <section className="relative h-[560px] overflow-hidden bg-[#143c25] md:h-[735px]">
-      <img src={`${ASSET_PATH}story-hero.png`} alt="Epic Padel club wall" className="h-full w-full object-cover object-center" />
-      <F31Header navigation={mainNavigation} />
-    </section>
+    <article className="font-sans text-[#154527]">
+      <button
+        type="button"
+        className="group grid w-full grid-cols-[15px_1fr] items-center gap-4 text-left text-[8px] font-light uppercase leading-none tracking-[0] md:grid-cols-[37.5px_1fr] md:gap-10 md:text-[24px]"
+        aria-expanded={isOpen}
+        onClick={onToggle}
+      >
+        <ArrowCircle
+          as="span"
+          className="group-hover:bg-[#FAD7D3] group-hover:text-[#FFFCF2]"
+          direction={isOpen ? "down" : "right"}
+          size="story"
+          strokeWidth={2.5}
+          tone={arrowTone}
+        />
+        <span>{item.label}</span>
+      </button>
+
+      {isOpen && (
+        <p className="ml-[31px] mt-3 max-w-[640px] text-[10px] font-light normal-case leading-[15px] tracking-[0] text-[#154527] md:ml-[77.5px] md:mt-4 md:text-[14px] md:leading-5">
+          {storyDetails[item.label]}
+        </p>
+      )}
+    </article>
   );
 };
 
 const StoryIndex = () => {
+  const [openLabel, setOpenLabel] = useState(null);
+  const [visitedLabels, setVisitedLabels] = useState([]);
+
+  const toggleStoryItem = (label) => {
+    setOpenLabel((current) => (current === label ? null : label));
+    setVisitedLabels((current) => (current.includes(label) ? current : [...current, label]));
+  };
+
   return (
-    <section className="bg-[#FFFCF2] px-8 py-16 md:px-16 md:py-[88px]">
-      <div className="mx-auto grid max-w-[1340px] gap-12 md:grid-cols-[250px_1fr] md:items-start">
-        <h1 className="text-[64px] font-semibold leading-[0.95] tracking-[-0.06em] text-epic-pink md:text-[72px]">
+    <section className="bg-white px-4 py-4 md:px-12 md:py-24">
+      <div className="mx-auto grid max-w-[1340px] gap-4 md:grid-cols-[250px_1fr] md:items-start md:gap-[78px]">
+        <SectionHeading className="text-[45px] md:text-[86px]">
           our
           <br />
           story
-        </h1>
-        <div className="grid max-w-[650px] gap-10 md:pt-5">
+        </SectionHeading>
+        <div className="grid max-w-[760px] gap-3 pt-1 md:gap-10 md:pt-4">
           {storyLinks.map((item) => (
-            <Link key={item.label} to={item.path} className="group grid grid-cols-[38px_1fr] items-center gap-16 text-[14px] font-bold uppercase tracking-[0.01em] text-[#154527]">
-              <img src={`${ASSET_PATH}arrow-right.png`} alt="" className="h-8 w-8 object-contain transition group-hover:scale-105" />
-              <span>{item.label}</span>
-            </Link>
+            <StoryAccordionItem
+              key={item.label}
+              isOpen={openLabel === item.label}
+              isVisited={visitedLabels.includes(item.label)}
+              item={item}
+              onToggle={() => toggleStoryItem(item.label)}
+            />
           ))}
         </div>
       </div>
@@ -37,63 +94,20 @@ const StoryIndex = () => {
   );
 };
 
-const TeamSection = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const orderedMembers = useMemo(
-    () => teamMembers.map((_, index) => teamMembers[(activeIndex + index) % teamMembers.length]),
-    [activeIndex]
-  );
-  const featured = orderedMembers[0];
-  const thumbnails = orderedMembers.slice(1, 3);
-
-  const goPrevious = () => setActiveIndex((current) => (current - 1 + teamMembers.length) % teamMembers.length);
-  const goNext = () => setActiveIndex((current) => (current + 1) % teamMembers.length);
-
-  return (
-    <section className="bg-[#FFFCF2] px-8 py-16 md:px-16 md:py-[132px]">
-      <div className="mx-auto max-w-[1302px] md:relative md:h-[524px]">
-        <div className="md:absolute md:left-0 md:top-0">
-          <h2 className="text-[64px] font-semibold leading-[1.02] tracking-[-0.06em] text-epic-pink md:text-[84px]">
-            our
-            <br />
-            team
-          </h2>
-          <button className="mt-20 hidden transition hover:scale-105 md:block md:absolute md:left-[6px] md:top-[478px] md:mt-0" type="button" onClick={goPrevious} aria-label="Previous team member">
-            <img src={`${ASSET_PATH}arrow-left.png`} alt="" className="h-[45px] w-[45px] object-contain" />
-          </button>
-        </div>
-
-        <div className="mt-12 grid grid-cols-2 gap-5 md:mt-0 md:block">
-          {thumbnails.map((member) => (
-            <article key={member.name} className="group overflow-hidden md:absolute md:top-[249px] md:[&:nth-child(1)]:left-[117px] md:[&:nth-child(2)]:left-[344px]">
-              <img src={`${ASSET_PATH}${member.image}`} alt={member.name} className="aspect-[207/274] w-full object-cover transition duration-500 group-hover:scale-105 md:h-[274px] md:w-[207px]" />
-            </article>
-          ))}
-        </div>
-
-        <div className="mt-8 grid gap-9 md:mt-0 md:block">
-          <img src={`${ASSET_PATH}${featured.image}`} alt={featured.name} className="aspect-[400/500] w-full object-cover md:absolute md:left-[571px] md:top-[24px] md:h-[500px] md:w-[400px]" />
-          <article className="relative max-w-[260px] md:absolute md:left-[1024px] md:top-[215px] md:h-[217px] md:pb-[72px]">
-            <h3 className="text-[17px] font-extrabold uppercase leading-tight text-[#154527]">{featured.name}</h3>
-            <p className="text-[14px] font-bold uppercase text-[#154527]">{featured.role}</p>
-            <p className="mt-5 mb-5 text-[14px] font-medium leading-5 text-[#154527]">{featured.summary}</p>
-            <button className="mt-10 transition hover:scale-105 md:bottom-0 md:left-0 md:mt-0" type="button" onClick={goNext} aria-label="Next team member">
-              <img src={`${ASSET_PATH}arrow-right.png`} alt="" className="h-[45px] w-[45px] object-contain" />
-            </button>
-          </article>
-        </div>
-      </div>
-    </section>
-  );
-};
+const StoryBillboard = () => (
+  <>
+    <img src={`${ASSET_PATH}mobile-location-billboard.png`} alt="Epic Padel billboard" className="w-full object-cover object-center md:hidden" />
+    <img src={`${ASSET_PATH}story-billboard.png`} alt="Epic Padel billboard" className="hidden h-[742px] w-full object-cover object-center md:block" />
+  </>
+);
 
 const StoryPage = () => {
   return (
-    <main className="min-h-screen bg-[#FFFCF2] font-sans text-[#154527]">
+    <main className="min-h-screen bg-white font-sans text-[#154527]">
       <StoryHero />
       <StoryIndex />
-      <img src={`${ASSET_PATH}story-billboard.png`} alt="Epic Padel billboard" className="h-[420px] w-full object-cover object-center md:h-[742px]" />
-      <TeamSection />
+      <StoryBillboard />
+      <TeamSection members={teamMembers} variant="story" />
       <SiteFooter />
     </main>
   );
