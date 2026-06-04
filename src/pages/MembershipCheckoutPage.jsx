@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
-import { ShoppingCart, Trash2, Wallet } from "lucide-react";
+import { Trash2, Wallet } from "lucide-react";
 import ArrowCircle from "../components/common/ArrowCircle";
+import F31Header from "../components/f31/F31Header";
 import SiteFooter from "../components/layout/SiteFooter";
 import { ASSET_PATH } from "../constants/assets";
 import { mainNavigation } from "../data/routes";
@@ -115,26 +116,6 @@ const validateCheckoutForm = (form, cartItems) => {
 
   return errors;
 };
-
-const CheckoutHeader = () => (
-  <header className="bg-white">
-    <nav className="mx-auto flex h-[86px] max-w-[1440px] items-center px-5 text-[#154527] md:h-[116px] md:px-[47px]">
-      <Link to="/" className="block">
-        <img src={`${ASSET_PATH}logo-green.png`} alt="Epic Padel" className="h-[47px] w-auto object-contain" />
-      </Link>
-      <div className="font-display ml-auto hidden items-center gap-[64px] text-[15px] font-bold lowercase leading-none tracking-[0] md:flex">
-        {mainNavigation.map((item) => (
-          <Link key={item.path} to={item.path} className="transition hover:text-[#FAD7D3]">
-            {item.label}
-          </Link>
-        ))}
-      </div>
-      <Link to="/join-epic/membership/checkout" aria-label="Cart" className="ml-auto text-[#154527] md:ml-[61px]">
-        <ShoppingCart size={25} strokeWidth={2.3} />
-      </Link>
-    </nav>
-  </header>
-);
 
 const SectionLabel = ({ children }) => (
   <div className="flex items-center gap-[14px] text-[#7d987f]">
@@ -446,8 +427,8 @@ const MembershipCheckoutPage = () => {
 
   return (
     <main className="min-h-screen bg-white font-sans text-[#154527]">
-      <CheckoutHeader />
-      <section className="mx-auto grid max-w-[1440px] gap-[56px] px-4 pb-[90px] pt-[40px] md:grid-cols-[minmax(0,1fr)_470px] md:gap-[60px] md:px-[50px] md:pb-[168px] md:pt-[64px]">
+      <F31Header navigation={mainNavigation} floating={false} />
+      <section className="mx-auto grid max-w-[1440px] gap-[56px] px-4 pb-[90px] pt-[40px] md:grid-cols-[minmax(0,1fr)_470px] md:gap-[60px] md:px-[50px] md:pb-[158px] md:pt-[64px]">
         <div>
           <CartDetails error={errors.cart} items={cartItems} total={total} onRemoveItem={handleRemoveItem} />
           <ContactDetails errors={errors} form={form} onBlur={handleFieldBlur} onChange={handleFieldChange} />

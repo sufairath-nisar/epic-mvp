@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { X } from "lucide-react";
+import OverlayShell from "../components/layout/OverlayShell";
 import { ASSET_PATH } from "../constants/assets";
-import { mainNavigation } from "../data/routes";
-import { Link } from "../router/RouterProvider";
+import { Link, useRouter } from "../router/RouterProvider";
+import { saveJoinDetails } from "../utils/joinFlow";
 
 const initialForm = {
   firstName: "",
@@ -58,26 +59,6 @@ const validateJoinForm = (form) => {
   return errors;
 };
 
-const JoinHeader = () => (
-  <header className="absolute left-0 top-0 z-20 w-full">
-    <nav className="mx-auto flex h-[116px] max-w-[1440px] items-center px-[50px] text-[#FCEFA7]">
-      <Link to="/" className="block">
-        <img src={`${ASSET_PATH}logo-cream.svg`} alt="Epic Padel" className="h-[33px] w-[91px] object-contain" />
-      </Link>
-      <div className="font-display ml-auto hidden items-center gap-[64px] text-[15px] font-bold lowercase leading-none tracking-[0] md:flex">
-        {mainNavigation.map((item) => (
-          <Link key={item.path} to={item.path} className="transition hover:text-[#FAD7D3]">
-            {item.label}
-          </Link>
-        ))}
-      </div>
-      <Link to="/profile" aria-label="Profile" className="ml-[58px] hidden md:block">
-        <img src={`${ASSET_PATH}profile-icon.png`} alt="" className="h-[17px] w-[15px] object-contain" />
-      </Link>
-    </nav>
-  </header>
-);
-
 const FormError = ({ message }) => (message ? <p className="mt-[4px] text-[9px] font-light leading-none text-[#e43d2d]">{message}</p> : null);
 
 const JoinInput = ({ error, label, name, onChange, placeholder, value }) => (
@@ -87,7 +68,7 @@ const JoinInput = ({ error, label, name, onChange, placeholder, value }) => (
       name={name}
       value={value}
       onChange={(event) => onChange(name, event.target.value)}
-      className={`mt-[10px] h-[36px] w-full rounded-[6px] border bg-white px-[14px] text-[12px] font-light text-[#154527] outline-none placeholder:text-[#d2d2d2] ${
+      className={`mt-[10px] h-[44px] w-full rounded-[6px] border bg-white px-[14px] text-[12px] font-light text-[#154527] outline-none placeholder:text-[#d2d2d2] md:h-[36px] ${
         error ? "border-[#e43d2d]" : "border-transparent"
       }`}
       placeholder={placeholder}
@@ -97,12 +78,13 @@ const JoinInput = ({ error, label, name, onChange, placeholder, value }) => (
 );
 
 const SocialButton = ({ children }) => (
-  <button type="button" className="flex h-[30px] w-[164px] items-center justify-center rounded-full border border-[#dddddd] bg-white text-[12px] font-light leading-none tracking-[0] text-[#111111] transition hover:border-[#154527]">
+  <button type="button" className="flex h-[44px] flex-1 items-center justify-center rounded-full border border-[#dddddd] bg-white text-[12px] font-light leading-none tracking-[0] text-[#111111] transition hover:border-[#154527] md:h-[30px] md:w-[164px] md:flex-none">
     {children}
   </button>
 );
 
 const JoinEpicPage = () => {
+  const { navigate } = useRouter();
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("");
@@ -122,41 +104,42 @@ const JoinEpicPage = () => {
     event.preventDefault();
     const nextErrors = validateJoinForm(form);
     setErrors(nextErrors);
-    setStatus(Object.keys(nextErrors).length > 0 ? "Please complete the required fields." : "OTP sent successfully.");
+
+    if (Object.keys(nextErrors).length > 0) {
+      setStatus("Please complete the required fields.");
+      return;
+    }
+
+    saveJoinDetails(form);
+    setStatus("OTP sent successfully.");
+    navigate("/join-epic/otp");
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#c7beb0] font-sans text-[#154527]">
-      <img
-        src={`${ASSET_PATH}home-hero-player.png`}
-        alt=""
-        className="absolute inset-0 h-full w-full scale-[1.06] object-cover object-center blur-[22px]"
-      />
-      <div className="absolute inset-0 bg-[#d3cabd]/60" />
-      <JoinHeader />
+    <OverlayShell>
+      <div className="relative flex min-h-[calc(100vh-71px)] w-full flex-col overflow-hidden rounded-t-[34px] bg-white shadow-none md:grid md:h-[563px] md:min-h-0 md:w-[886px] md:shrink-0 md:grid-cols-[410px_476px] md:rounded-[45px]">
+          <Link to="/" aria-label="Close" className="absolute right-[24px] top-[24px] z-10 text-[#154527] transition hover:text-[#FAD7D3] md:right-[39px] md:top-[31px]">
+            <X size={17} strokeWidth={2} />
+          </Link>
 
-      <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1440px] items-start justify-center overflow-x-auto px-4 pb-[48px] pt-[151px]">
-        <div className="grid h-[563px] w-[886px] shrink-0 grid-cols-[410px_476px] overflow-hidden rounded-[45px] bg-white shadow-none">
-          <section className="relative h-[563px] bg-white px-[40px] pb-[54px] pt-[60px]">
-            <div className="flex h-[60px] w-[60px] items-center justify-center rounded-full border-[5px] border-[#FCEFA7] text-[#FCEFA7]">
-              <span className="font-display text-[58px] font-bold leading-[0.6] tracking-[0]">e</span>
-            </div>
+          <section className="relative bg-white px-[40px] pb-[38px] pt-[40px] md:h-[563px] md:pb-[54px] md:pt-[60px]">
+            <img src={`${ASSET_PATH}logo-mark-cream.svg`} alt="Epic" className="hidden h-[60px] w-[60px] md:block" />
 
-            <div className="mt-[135px]">
-              <h1 className="font-display text-[64px] font-bold lowercase leading-[0.98] tracking-[0] text-[#FAD7D3]">
+            <div className="md:mt-[125px]">
+              <h1 className="font-display text-[46px] font-bold lowercase leading-[0.98] tracking-[0] text-[#FAD7D3] md:text-[64px]">
                 create
                 <br />
                 <span>an</span>
                 <span className="ml-[35px]">account</span>
               </h1>
-              <p className="mt-[25px] max-w-[315px] text-[12px] font-light leading-[15px] tracking-[0] text-[#154527]">
+              <p className="mt-[16px] max-w-[315px] text-[12px] font-light leading-[15px] tracking-[0] text-[#154527] md:mt-[17px]">
                 Unlock unlimited access to premium Padel courts and exclusive member benefits.
                 <br />
                 Sign up today and start playing!
               </p>
             </div>
 
-            <p className="absolute bottom-[54px] left-[40px] text-[10px] font-light leading-none tracking-[0] text-[#547257]">
+            <p className="mt-[18px] text-[10px] font-light leading-none tracking-[0] text-[#547257] md:absolute md:bottom-[54px] md:left-[40px] md:mt-0">
               Already have an account? Click{" "}
               <Link to="/profile" className="underline">
                 here
@@ -165,12 +148,8 @@ const JoinEpicPage = () => {
             </p>
           </section>
 
-          <section className="relative h-[563px] bg-[#f4f4f4] px-[60px] pb-[53px] pt-[60px]">
-            <Link to="/" aria-label="Close" className="absolute right-[39px] top-[31px] text-[#154527] transition hover:text-[#FAD7D3]">
-              <X size={17} strokeWidth={2} />
-            </Link>
-
-            <form onSubmit={handleSubmit} noValidate className="mt-[1px] grid gap-[16px]">
+          <section className="relative flex-1 bg-[#f4f4f4] px-[40px] pb-[45px] pt-[28px] md:h-[563px] md:px-[60px] md:pb-[63px] md:pt-[60px]">
+            <form onSubmit={handleSubmit} noValidate className="grid gap-[16px] md:mt-[1px]">
               {fieldConfig.map((field) => (
                 <JoinInput
                   key={field.name}
@@ -183,14 +162,14 @@ const JoinEpicPage = () => {
                 />
               ))}
 
-              <button type="submit" className="mt-[13px] h-[37px] w-full rounded-full bg-[#154527] text-[12px] font-light uppercase leading-none tracking-[0] text-[#FCEFA7] transition hover:bg-[#FCEFA7] hover:text-[#154527]">
+              <button type="submit" className="mt-[13px] h-[48px] w-full rounded-full bg-[#154527] text-[12px] font-light uppercase leading-none tracking-[0] text-[#FCEFA7] transition hover:bg-[#FCEFA7] hover:text-[#154527] md:h-[37px]">
                 Send OTP
               </button>
 
               {status ? <p className="text-center text-[10px] font-light leading-none text-[#154527]">{status}</p> : null}
             </form>
 
-            <div className="mt-[50px] flex items-center gap-[9px]">
+            <div className="mt-[28px] flex items-center gap-[9px] md:mt-[55px]">
               <span className="h-px flex-1 bg-[#dedede]" />
               <span className="text-[10px] font-light leading-none text-[#d3d3d3]">or</span>
               <span className="h-px flex-1 bg-[#dedede]" />
@@ -198,18 +177,17 @@ const JoinEpicPage = () => {
 
             <div className="mt-[19px] flex gap-[18px]">
               <SocialButton>
-                <span className="mr-[9px] text-[16px] font-normal leading-none text-[#4285f4]">G</span>
+                <img src={`${ASSET_PATH}google-icon.svg`} alt="" className="mr-[9px] h-[13px] w-[13px]" />
                 Sign in with Google
               </SocialButton>
               <SocialButton>
-                <span className="mr-[9px] text-[16px] leading-none">A</span>
+                <img src={`${ASSET_PATH}apple-icon.svg`} alt="" className="mr-[9px] h-[15px] w-[12px]" />
                 Sign in with Apple
               </SocialButton>
             </div>
           </section>
         </div>
-      </section>
-    </main>
+    </OverlayShell>
   );
 };
 

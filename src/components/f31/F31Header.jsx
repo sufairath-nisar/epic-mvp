@@ -3,7 +3,13 @@ import { ChevronDown, Menu, X } from "lucide-react";
 import { ASSET_PATH } from "../../constants/assets";
 import { Link, useRouter } from "../../router/RouterProvider";
 
-const F31Header = ({ navigation }) => {
+const F31Header = ({ navigation, tone = "dark", floating = true }) => {
+  const isLight = tone === "light";
+  const textColor = isLight ? "text-[#154527]" : "text-[#fff4a8]";
+  const logoFile = isLight ? "logo-green.png" : "logo-cream.svg";
+  const navHover = isLight ? "hover:text-[#FAD7D3]" : "hover:text-[#154527]";
+  const navActive = isLight ? "text-[#FAD7D3]" : "text-[#154527]";
+  const headerClass = floating ? "absolute inset-x-0 top-0 z-20" : "relative z-20";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileSubmenuOpen, setIsMobileSubmenuOpen] = useState(false);
   const [desktopSubmenuMode, setDesktopSubmenuMode] = useState("closed");
@@ -33,8 +39,8 @@ const F31Header = ({ navigation }) => {
   }, [isDesktopSubmenuOpen]);
 
   return (
-    <header className="absolute inset-x-0 top-0 z-20">
-      <nav className="mx-auto grid max-w-[1340px] grid-cols-3 items-center px-5 py-4 text-[#fff4a8] md:flex md:px-12 md:py-9">
+    <header className={headerClass}>
+      <nav className={`mx-auto grid max-w-[1340px] grid-cols-3 items-center px-5 py-4 ${textColor} md:flex md:px-12 md:py-9`}>
         <button
           className="justify-self-start md:hidden"
           type="button"
@@ -49,7 +55,7 @@ const F31Header = ({ navigation }) => {
         </button>
 
         <Link to="/" className="block justify-self-center md:justify-self-auto">
-          <img src={`${ASSET_PATH}logo-cream.svg`} alt="EPIC Padel" className="h-[20px] w-auto md:h-[33px]" />
+          <img src={`${ASSET_PATH}${logoFile}`} alt="EPIC Padel" className="h-[20px] w-auto md:h-[33px]" />
         </Link>
 
         <div className="font-display ml-auto hidden items-center gap-16 text-[15px] font-bold lowercase md:flex">
@@ -65,19 +71,19 @@ const F31Header = ({ navigation }) => {
                 <button
                   type="button"
                   aria-expanded={isDesktopSubmenuOpen}
-                  className={`lowercase transition hover:text-[#154527] ${isWeAreEpicActive || isDesktopSubmenuOpen ? "text-[#154527]" : ""}`}
+                  className={`lowercase transition ${navHover} ${isWeAreEpicActive || isDesktopSubmenuOpen ? navActive : ""}`}
                   onClick={() => setDesktopSubmenuMode((current) => (current === "click" ? "closed" : "click"))}
                 >
                   {item.label}
                 </button>
                 {isDesktopSubmenuOpen && (
-                  <div className="absolute left-0 top-full z-30 mt-7 w-[170px] text-[#FAD7D3]">
+                  <div className="absolute left-0 top-full z-30 mt-3 w-[170px] text-[#FAD7D3]">
                     <nav className="grid gap-2 font-display text-[15px] font-bold leading-none">
                       {weAreEpicLinks.map((link) => (
                         <Link
                           key={link.path}
                           to={link.path}
-                          className={`w-fit transition hover:text-[#154527] ${isActivePath(link.path) ? "text-[#154527]" : ""}`}
+                          className={`w-fit transition ${navHover} ${isActivePath(link.path) ? navActive : ""}`}
                           onClick={() => setDesktopSubmenuMode("closed")}
                         >
                           {link.label}
@@ -88,13 +94,13 @@ const F31Header = ({ navigation }) => {
                 )}
               </div>
             ) : (
-              <Link key={item.label} to={item.path} className={`transition hover:text-[#154527] ${isActivePath(item.path) ? "text-[#154527]" : ""}`}>
+              <Link key={item.label} to={item.path} className={`transition ${navHover} ${isActivePath(item.path) ? navActive : ""}`}>
                 {item.label}
               </Link>
             )
           ))}
         </div>
-        <Link to="/profile" aria-label="Profile" className="justify-self-end text-[#fff4a8] md:ml-16 md:block md:justify-self-auto">
+        <Link to="/profile" aria-label="Profile" className={`justify-self-end ${textColor} md:ml-16 md:block md:justify-self-auto`}>
           <img src={`${ASSET_PATH}profile-icon.png`} alt="" className="h-[15px] w-[15px] object-contain md:h-[18px] md:w-[18px]" />
         </Link>
       </nav>
