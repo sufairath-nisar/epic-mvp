@@ -93,7 +93,7 @@ const FindEpicHero = ({ hero = findEpicHero }) => (
       <div className="mt-2 flex items-start gap-2 md:mt-3 md:gap-4">
         <BookCourtCta />
         <Link
-          to="/join-epic/membership"
+          to="#"
           className="flex h-[22px] w-[116px] items-center justify-center rounded-full border border-[#fff2a8] text-[8px] font-normal uppercase leading-none tracking-[0] text-[#fff2a8] transition hover:border-[#154527] hover:bg-[#154527] hover:text-[#fff2a8] md:h-[34px] md:w-[178px] md:text-[15px]"
         >
           View Memberships
