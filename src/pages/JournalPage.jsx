@@ -164,7 +164,7 @@ const MobileFilters = ({ sortValue, filterValue, onSort, onFilter, onClear }) =>
 
 const NewsCard = ({ item }) => (
   <article className={`shrink-0 ${item.width}`}>
-    <img src={`${ASSET_PATH}${item.image}`} alt={item.title} className={`w-full object-cover ${item.imageHeight}`} />
+    <img src={`${ASSET_PATH}${item.image}`} alt={item.title} loading="lazy" className={`w-full object-cover ${item.imageHeight}`} />
     <p className="mt-[12px] text-[11px] font-light leading-none tracking-[0] text-[#154527] md:text-[14px]">{item.source}</p>
     <h4 className="mt-[6px] text-[12px] font-normal leading-[1.35] tracking-[0] text-[#154527] md:mt-[3px] md:text-[14px]">{item.title}</h4>
     <p className="mt-[8px] text-[11px] font-light leading-[1.45] tracking-[0] text-[#547257] md:mt-[17px] md:text-[14px]">{item.excerpt}</p>
@@ -262,6 +262,7 @@ const JournalPage = () => {
                 <img
                   src={resolveAssetUrl(blog.image)}
                   alt={blog.title}
+                  loading="lazy"
                   className={`h-full w-full object-cover transition-opacity duration-1000 group-hover:opacity-0 ${flipped ? "opacity-0" : "opacity-100"}`}
                 />
                 <div

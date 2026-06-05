@@ -25,23 +25,19 @@ const investments = [
 const cplParagraphs = [
   {
     title: "",
-    body:
-      "The College Padel League (CPL) represents a pioneering initiative, introducing the rapidly growing sport of padel into the U.S. collegiate landscape. As a first-of-its-kind competitive platform, CPL operates as a private, non-NCAA sanctioned sport, offering universities and their student-athletes' unique opportunities for organized padel competition."
+    body: "The College Padel League (CPL) represents a pioneering initiative, introducing the rapidly growing sport of padel into the U.S. collegiate landscape. As a first-of-its-kind competitive platform, CPL operates as a private, non-NCAA sanctioned sport, offering universities and their student-athletes' unique opportunities for organized padel competition."
   },
   {
     title: "Accessibility and Inclusivity",
-    body:
-      "CPL is committed to fostering accessibility and inclusivity, welcoming students from a variety of athletic backgrounds that want to explore the fitness and community of Padel. By doing so, the league not only broadens participation but also creates new scholarship avenues through strategic alignment with campus sports initiatives."
+    body: "CPL is committed to fostering accessibility and inclusivity, welcoming students from a variety of athletic backgrounds that want to explore the fitness and community of Padel. By doing so, the league not only broadens participation but also creates new scholarship avenues through strategic alignment with campus sports initiatives."
   },
   {
     title: "Bridging Global and U.S. Momentum",
-    body:
-      "With padel experiencing a surge in global popularity, CPL serves as a bridge, connecting international enthusiasm for the sport with the U.S. college ecosystem. This approach cultivates a vibrant community, develops a talent pipeline, and launches a lifestyle movement centered on one of the world's most exciting emerging sports."
+    body: "With padel experiencing a surge in global popularity, CPL serves as a bridge, connecting international enthusiasm for the sport with the U.S. college ecosystem. This approach cultivates a vibrant community, develops a talent pipeline, and launches a lifestyle movement centered on one of the world's most exciting emerging sports."
   },
   {
     title: "Growth Strategy and Partnerships",
-    body:
-      "To accelerate its development, CPL aims to partner with leading U.S.-based operators. Through these collaborations, the league will deliver nationwide reach, greater access, and top-tier coaching. These efforts are designed to establish CPL as a cornerstone for padel's continued expansion throughout the United States and a development hub for future talent to emerge into the PPL or simply just grow their exposure to the sport."
+    body: "To accelerate its development, CPL aims to partner with leading U.S.-based operators. Through these collaborations, the league will deliver nationwide reach, greater access, and top-tier coaching. These efforts are designed to establish CPL as a cornerstone for padel's continued expansion throughout the United States and a development hub for future talent to emerge into the PPL or simply just grow their exposure to the sport."
   }
 ];
 
@@ -55,9 +51,7 @@ const GetInTouchButton = ({ children, className = "" }) => (
 );
 
 const SectionHeading = ({ children, className = "" }) => (
-  <h2 className={`font-display text-[46px] font-bold lowercase leading-[0.9] tracking-[0] text-[#FAD7D3] md:text-[86px] md:leading-[1.05] ${className}`}>
-    {children}
-  </h2>
+  <h2 className={`font-display text-[46px] font-bold lowercase leading-[0.9] tracking-[0] text-[#FAD7D3] md:text-[86px] md:leading-[1.05] ${className}`}>{children}</h2>
 );
 
 const InvestCard = ({ item }) => {
@@ -70,16 +64,11 @@ const InvestCard = ({ item }) => {
   const hex = hoverBg.replace("#", "");
   const luminance = 0.299 * parseInt(hex.slice(0, 2), 16) + 0.587 * parseInt(hex.slice(2, 4), 16) + 0.114 * parseInt(hex.slice(4, 6), 16);
   const textColor = hover && luminance < 140 ? "#ffffff" : "#1E1E1E";
-  const logoSrc = useHoverImg
-    ? `${ASSET_PATH}invest-${item.slug}-hover.${ext}`
-    : `${ASSET_PATH}invest-${item.slug}.${ext}`;
+  const logoSrc = useHoverImg ? `${ASSET_PATH}invest-${item.slug}-hover.${ext}` : `${ASSET_PATH}invest-${item.slug}.${ext}`;
 
   return (
     <a href="#visit" className="block" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      <div
-        className="flex aspect-[3/4] flex-col px-[20px] pb-[22px] pt-[24px] transition-colors duration-300"
-        style={{ backgroundColor: hover ? hoverBg : "#D9D9D933" }}
-      >
+      <div className="flex aspect-[3/4] flex-col px-[20px] pb-[22px] pt-[24px] transition-colors duration-300" style={{ backgroundColor: hover ? hoverBg : "#D9D9D933" }}>
         <div className="flex flex-1 items-center justify-center">
           <img
             src={logoSrc}
@@ -94,8 +83,12 @@ const InvestCard = ({ item }) => {
           />
         </div>
         <div className="text-center">
-          <p className="text-[10px] font-normal uppercase leading-[1.3] tracking-[0]" style={{ color: textColor }}>{item.label}</p>
-          <span className="mt-[6px] inline-block text-[10px] font-light leading-none tracking-[0] underline" style={{ color: textColor }}>Visit Website</span>
+          <p className="text-[10px] font-normal uppercase leading-[1.3] tracking-[0]" style={{ color: textColor }}>
+            {item.label}
+          </p>
+          <span className="mt-[6px] inline-block text-[10px] font-light leading-none tracking-[0] underline" style={{ color: textColor }}>
+            Visit Website
+          </span>
         </div>
       </div>
     </a>
@@ -116,7 +109,8 @@ const InvestmentsPage = () => {
             investments
           </SectionHeading>
           <p className="text-[12px] font-light leading-[16px] tracking-[0] text-[#547257] md:self-end md:text-[14px] md:leading-[20px] md:mb-[0px] mb-[10px]">
-            We invest in padel startups driving innovation in the world's fastest-growing sport, focusing on U.S. and emerging market-based operators, professional leagues, tournaments, technology solutions, and performance apparel.
+            We invest in padel startups driving innovation in the world's fastest-growing sport, focusing on U.S. and emerging market-based operators, professional leagues, tournaments, technology
+            solutions, and performance apparel.
           </p>
           <div className="md:justify-self-end md:self-end">
             <GetInTouchButton className="uppercase w-full md:w-auto">Get in touch with us</GetInTouchButton>
@@ -138,7 +132,8 @@ const InvestmentsPage = () => {
         <div className="grid gap-[15px] md:grid-cols-2 md:items-start md:gap-[21px]">
           <SectionHeading>incubation</SectionHeading>
           <p className="text-[12px] font-light leading-[16px] tracking-[0] text-[#547257] md:pt-[18px] md:text-[14px] md:leading-[20px]">
-            America is the innovation capital country of the world. We at EPIC strive to become the most innovative padel company in North America. As veteran venture capitalists we understand and appreciate the power of technology and its impact on our lives.
+            America is the innovation capital country of the world. We at EPIC strive to become the most innovative padel company in North America. As veteran venture capitalists we understand and
+            appreciate the power of technology and its impact on our lives.
           </p>
         </div>
       </section>
@@ -168,7 +163,9 @@ const InvestmentsPage = () => {
         <div className="mx-auto max-w-[1440px] px-[24px] pt-[28px] md:px-[50px] md:pt-[48px]">
           <h3 className="text-[24px] font-regular uppercase leading-none tracking-[0] text-[#154527] md:text-[24px]">Zero.40</h3>
           <p className="mt-[20px] text-[12px] font-light leading-[16px] tracking-[0] text-[#154527] w-full md:mt-[24px] md:text-[16px] md:leading-[24px] md:w-auto">
-            Zero.40 is a fully integrated booking app that allows EPIC Padel and future clients to white-label its services. Zero.40 offerings include a fully integrated court booking system, camera-based player tracking, padel rating management, and other features designed to streamline club operations, enhance the player experience, and provide real-time insights for members and management.
+            Zero.40 is a fully integrated booking app that allows EPIC Padel and future clients to white-label its services. Zero.40 offerings include a fully integrated court booking system,
+            camera-based player tracking, padel rating management, and other features designed to streamline club operations, enhance the player experience, and provide real-time insights for members
+            and management.
           </p>
           <GetInTouchButton className="mt-[35px] uppercase w-full md:w-auto md:mt-[54px]">Get in touch with Zero.40</GetInTouchButton>
         </div>

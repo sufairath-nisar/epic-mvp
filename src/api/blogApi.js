@@ -15,7 +15,7 @@ function formatDate(iso) {
 
 // Maps an API blog onto the card shape the Journal/Article pages use:
 // { slug, title, description, image, date, category }
-function mapBlog(item) {
+export function mapBlog(item) {
   return {
     slug: item.slug,
     title: item.title ?? "",

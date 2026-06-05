@@ -21,7 +21,9 @@ const CartPage = () => {
               <p className="mt-4 text-sm">Quantity: 1</p>
             </div>
           </div>
-          <Link to="/booking/checkout" className="mt-10 inline-flex rounded-full bg-[#154527] px-12 py-4 text-xs font-bold uppercase text-[#fff4a8]">Checkout</Link>
+          <Link to="/booking/checkout" className="mt-10 inline-flex rounded-full bg-[#154527] px-12 py-4 text-xs font-bold uppercase text-[#fff4a8]">
+            Checkout
+          </Link>
         </div>
       </section>
       <SiteFooter />

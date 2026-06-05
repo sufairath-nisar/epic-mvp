@@ -121,9 +121,7 @@ const MembershipCard = ({ plan, styles, isActive, onSelect, onSelectPlan }) => {
       {plan.badge && <p className={styles.badge}>{plan.badge}</p>}
 
       <div className={styles.top}>
-        <span
-          className={`block ${styles.dot} bg-[#154527] transition-colors group-hover:!bg-[#FCEFA7] group-focus-within:!bg-[#FCEFA7] ${isActive ? "!bg-[#FCEFA7]" : ""}`}
-        />
+        <span className={`block ${styles.dot} bg-[#154527] transition-colors group-hover:!bg-[#FCEFA7] group-focus-within:!bg-[#FCEFA7] ${isActive ? "!bg-[#FCEFA7]" : ""}`} />
         <ClampWords text={plan.name} className={styles.title} />
         <p className={styles.audience}>
           {plan.audience.map((line, index) => (

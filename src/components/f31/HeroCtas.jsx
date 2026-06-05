@@ -34,12 +34,20 @@ export const DownloadAppCta = () => {
         Download the App
       </button>
       <div className={`absolute left-0 top-[34px] z-20 ${isOpen ? "grid" : "hidden"} w-full grid-cols-2 gap-[6px] group-hover:grid md:top-[54px]`}>
-          <a href="https://www.apple.com/app-store/" className="flex h-[20px] items-center justify-center rounded-full bg-[#154527] text-[#fff2a8] transition hover:bg-[#154527] md:h-[26px]" aria-label="Download on the App Store">
-            <AppStoreIcon />
-          </a>
-          <a href="https://play.google.com/store" className="flex h-[20px] items-center justify-center rounded-full bg-[#154527] text-[#fff2a8] transition hover:bg-[#154527] md:h-[26px]" aria-label="Get it on Google Play">
-            <PlayStoreIcon />
-          </a>
+        <a
+          href="https://www.apple.com/app-store/"
+          className="flex h-[20px] items-center justify-center rounded-full bg-[#154527] text-[#fff2a8] transition hover:bg-[#154527] md:h-[26px]"
+          aria-label="Download on the App Store"
+        >
+          <AppStoreIcon />
+        </a>
+        <a
+          href="https://play.google.com/store"
+          className="flex h-[20px] items-center justify-center rounded-full bg-[#154527] text-[#fff2a8] transition hover:bg-[#154527] md:h-[26px]"
+          aria-label="Get it on Google Play"
+        >
+          <PlayStoreIcon />
+        </a>
       </div>
     </div>
   );

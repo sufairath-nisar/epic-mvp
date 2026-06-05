@@ -78,9 +78,7 @@ const LocationCard = ({ location, activeImageIndex = 0, onNext }) => {
     <article className="group relative w-full shrink-0 md:w-[calc((100vw-96px-48px)/3)] 2xl:w-[calc((1340px-48px)/3)]">
       <RotatingImage images={cardImages} alt={location.city} activeIndex={activeImageIndex} className="aspect-[393/478] bg-[#e5e2d8] md:aspect-[1.02]" />
       <h3 className="mt-5 text-[13px] font-normal uppercase leading-none tracking-[0] text-epic-green md:mt-7 md:text-[20px]">{location.city}</h3>
-      <p className="mt-3 h-[64px] max-w-[285px] overflow-hidden text-[11px] font-light leading-[16px] text-epic-green md:h-[96px] md:max-w-none md:text-[14px] md:leading-6">
-        {location.description}
-      </p>
+      <p className="mt-3 h-[64px] max-w-[285px] overflow-hidden text-[11px] font-light leading-[16px] text-epic-green md:h-[96px] md:max-w-none md:text-[14px] md:leading-6">{location.description}</p>
       <Link
         to={location.path}
         className="mt-4 inline-flex h-8 min-w-[180px] items-center justify-center rounded-full border border-[#154527] px-6 text-[10px] font-normal uppercase text-epic-green transition hover:bg-[#154527] hover:text-[#fff4a8] md:mt-5 md:h-10 md:px-8 md:text-[15px]"

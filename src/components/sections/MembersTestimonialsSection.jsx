@@ -27,15 +27,8 @@ const MembersTestimonialsSection = ({ testimonials, variant = "home" }) => {
   const [desktopIndex, setDesktopIndex] = useState(0);
   const styles = variants[variant] ?? variants.home;
   const ratingMarks = Array.from({ length: 5 }, (_, index) => index);
-  const mobileTestimonials = [
-    testimonials[mobileIndex],
-    testimonials[(mobileIndex + 1) % testimonials.length]
-  ].filter(Boolean);
-  const desktopTestimonials = [
-    testimonials[desktopIndex],
-    testimonials[(desktopIndex + 1) % testimonials.length],
-    testimonials[(desktopIndex + 2) % testimonials.length]
-  ].filter(Boolean);
+  const mobileTestimonials = [testimonials[mobileIndex], testimonials[(mobileIndex + 1) % testimonials.length]].filter(Boolean);
+  const desktopTestimonials = [testimonials[desktopIndex], testimonials[(desktopIndex + 1) % testimonials.length], testimonials[(desktopIndex + 2) % testimonials.length]].filter(Boolean);
 
   const showNextMobile = () => setMobileIndex((current) => (current + 1) % testimonials.length);
   const showNextDesktop = () => setDesktopIndex((current) => (current + 1) % testimonials.length);
@@ -69,7 +62,7 @@ const TestimonialCard = ({ item, ratingMarks, styles }) => (
   <article className="max-w-xs">
     <div className="mb-5 flex items-center gap-1.5" aria-label="5 star rating">
       {ratingMarks.map((mark) => (
-        <img key={mark} src={`${ASSET_PATH}testimonial-mark.png`} alt="" className="h-3 w-3 object-contain" />
+        <img key={mark} src={`${ASSET_PATH}testimonial-mark.png`} alt="" loading="lazy" className="h-3 w-3 object-contain" />
       ))}
     </div>
     <p className={styles.quote}>"{item.quote}"</p>

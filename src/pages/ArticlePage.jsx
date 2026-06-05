@@ -11,7 +11,7 @@ const FALLBACK_HERO_IMAGE = `${ASSET_PATH}journal-new-era.png`;
 
 const RelatedCard = ({ blog }) => (
   <Link to={`/our-journal/blog/${encodeURIComponent(blog.slug)}`} className="block w-[300px] shrink-0 md:w-[480px]">
-    <img src={resolveAssetUrl(blog.image)} alt={blog.title} className="aspect-[16/10] w-full object-cover" />
+    <img src={resolveAssetUrl(blog.image)} alt={blog.title} loading="lazy" className="aspect-[16/10] w-full object-cover" />
     <p className="mt-[14px] text-[12px] font-light leading-none tracking-[0] text-[#547257] md:mt-[16px]">{blog.date}</p>
     <h3 className="mt-[8px] text-[13px] font-normal uppercase leading-[1.4] tracking-[0] text-[#547257] md:mt-[3px] md:text-[14px]">{blog.title}</h3>
   </Link>

@@ -3,8 +3,9 @@ import { X } from "lucide-react";
 import OverlayShell from "../components/layout/OverlayShell";
 import { ASSET_PATH } from "../constants/assets";
 import { Link, useRouter } from "../router/RouterProvider";
-import { loginWithOtp, verifyEmailOTP, setAuthToken, extractToken } from "../api/authApi";
+import { loginWithOtp, verifyEmailOTP, setAuthToken, extractToken, extractUser } from "../api/authApi";
 import { getJoinDetails } from "../utils/joinFlow";
+import { getProfileDetails, saveProfileDetails } from "../utils/profileFlow";
 
 const OTP_LENGTH = 4;
 const EXPIRY_SECONDS = 323; // 5:23
@@ -74,10 +75,15 @@ const VerifyOtpPage = () => {
     if (email || phone) {
       setVerifying(true);
       try {
-        const [emailRes, phoneRes] = await Promise.all([verifyEmailOTP({ email, otp: code }), loginWithOtp({ phone, country, otp: code })]);
-        const token = extractToken(emailRes) ?? extractToken(phoneRes);
+        const responses = await Promise.all([verifyEmailOTP({ email, otp: code }), loginWithOtp({ phone, country, otp: code })]);
+        const token = responses.map(extractToken).find(Boolean) ?? null;
         if (token) {
           setAuthToken(token);
+        }
+        // Save the returned profile so the account page shows the bio.
+        const user = responses.map(extractUser).find(Boolean);
+        if (user) {
+          saveProfileDetails({ ...getProfileDetails(), ...user });
         }
         navigate("/join-epic/membership");
       } catch (verifyError) {

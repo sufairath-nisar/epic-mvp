@@ -8,12 +8,9 @@ import { mainNavigation } from "../data/routes";
 import { storyLinks, teamMembers } from "../data/siteContent";
 
 const storyDetails = {
-  "What is Epic":
-    "We're building more than clubs. We're building community-led spaces defined by movement, connection, and shared energy.",
-  "Why Epic":
-    "To put padel, play, and club life in a more accessible, social, and elevated setting that fits modern city life.",
-  "The ones behind Epic":
-    "Behind Epic Padel is a team of builders, operators, and padel believers creating experiences that make people want to return."
+  "What is Epic": "We're building more than clubs. We're building community-led spaces defined by movement, connection, and shared energy.",
+  "Why Epic": "To put padel, play, and club life in a more accessible, social, and elevated setting that fits modern city life.",
+  "The ones behind Epic": "Behind Epic Padel is a team of builders, operators, and padel believers creating experiences that make people want to return."
 };
 
 const StoryHero = () => (
@@ -24,11 +21,7 @@ const StoryHero = () => (
   </section>
 );
 
-const SectionHeading = ({ children, className = "" }) => (
-  <h1 className={`font-display font-bold leading-[0.92] tracking-[0] text-[#FAD7D3] ${className}`}>
-    {children}
-  </h1>
-);
+const SectionHeading = ({ children, className = "" }) => <h1 className={`font-display font-bold leading-[0.92] tracking-[0] text-[#FAD7D3] ${className}`}>{children}</h1>;
 
 const StoryAccordionItem = ({ isOpen, isVisited, item, onToggle }) => {
   const arrowTone = isOpen || isVisited ? "pinkWhite" : "yellow";
@@ -41,14 +34,7 @@ const StoryAccordionItem = ({ isOpen, isVisited, item, onToggle }) => {
         aria-expanded={isOpen}
         onClick={onToggle}
       >
-        <ArrowCircle
-          as="span"
-          className="group-hover:bg-[#FAD7D3] group-hover:text-[#FFFCF2]"
-          direction={isOpen ? "down" : "right"}
-          size="story"
-          strokeWidth={2.5}
-          tone={arrowTone}
-        />
+        <ArrowCircle as="span" className="group-hover:bg-[#FAD7D3] group-hover:text-[#FFFCF2]" direction={isOpen ? "down" : "right"} size="story" strokeWidth={2.5} tone={arrowTone} />
         <span>{item.label}</span>
       </button>
 
@@ -80,13 +66,7 @@ const StoryIndex = () => {
         </SectionHeading>
         <div className="grid max-w-[760px] gap-3 pt-1 md:gap-10 md:pt-4">
           {storyLinks.map((item) => (
-            <StoryAccordionItem
-              key={item.label}
-              isOpen={openLabel === item.label}
-              isVisited={visitedLabels.includes(item.label)}
-              item={item}
-              onToggle={() => toggleStoryItem(item.label)}
-            />
+            <StoryAccordionItem key={item.label} isOpen={openLabel === item.label} isVisited={visitedLabels.includes(item.label)} item={item} onToggle={() => toggleStoryItem(item.label)} />
           ))}
         </div>
       </div>

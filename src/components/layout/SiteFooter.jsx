@@ -6,10 +6,17 @@ const SiteFooter = () => {
       <div className="mx-auto max-w-[1440px] px-4 pb-9 pt-[91px] md:min-h-[603px] md:px-[50px] md:pt-[89px]">
         <div>
           <p className="text-[11px] font-light uppercase leading-[20px] tracking-[0] md:text-[14px] md:leading-[30px]">Be the first to know</p>
-          <p className="mt-[14px] text-[12px] font-light leading-[17px] tracking-[0] md:mt-[4px] md:text-[14px] md:leading-[20px]">Join our newsletter and get access to exclusive events, promos and more.</p>
+          <p className="mt-[14px] text-[12px] font-light leading-[17px] tracking-[0] md:mt-[4px] md:text-[14px] md:leading-[20px]">
+            Join our newsletter and get access to exclusive events, promos and more.
+          </p>
           <form className="mt-[30px] flex flex-col gap-3 md:mt-[42px] md:flex-row md:gap-6" onSubmit={(event) => event.preventDefault()}>
-            <input className="h-[32px] w-full rounded-full border border-[#154527] bg-transparent px-[22px] text-[11px] font-light leading-[20px] tracking-[0] outline-none placeholder:text-[#154527]/70 md:h-[34px] md:w-[484px] md:text-[14px]" placeholder="e.g., email@example.com" />
-            <button className="h-[32px] w-full rounded-full bg-[#154527] text-[11px] font-light uppercase leading-[20px] tracking-[0] text-[#fff2a8] transition hover:bg-[#154527] md:h-[34px] md:w-[153px] md:text-[13px]">Subscribe</button>
+            <input
+              className="h-[32px] w-full rounded-full border border-[#154527] bg-transparent px-[22px] text-[11px] font-light leading-[20px] tracking-[0] outline-none placeholder:text-[#154527]/70 md:h-[34px] md:w-[484px] md:text-[14px]"
+              placeholder="e.g., email@example.com"
+            />
+            <button className="h-[32px] w-full rounded-full bg-[#154527] text-[11px] font-light uppercase leading-[20px] tracking-[0] text-[#fff2a8] transition hover:bg-[#154527] md:h-[34px] md:w-[153px] md:text-[13px]">
+              Subscribe
+            </button>
           </form>
         </div>
 
@@ -70,7 +77,15 @@ const FooterColumn = ({ title, items, paths = [] }) => {
       <h3 className="text-[10px] font-light uppercase leading-[20px] tracking-[0] md:text-[14px] md:leading-[30px]">{title}</h3>
       <ul className="mt-[28px] space-y-0 text-[9px] font-light leading-[13px] tracking-[0] md:mt-[30px] md:text-[14px] md:leading-[20px]">
         {items.map((item, index) => (
-          <li key={item}>{paths[index] ? <Link to={paths[index]} className="transition hover:opacity-70">{item}</Link> : item}</li>
+          <li key={item}>
+            {paths[index] ? (
+              <Link to={paths[index]} className="transition hover:opacity-70">
+                {item}
+              </Link>
+            ) : (
+              item
+            )}
+          </li>
         ))}
       </ul>
     </div>

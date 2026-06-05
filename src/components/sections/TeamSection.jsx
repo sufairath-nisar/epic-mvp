@@ -4,11 +4,7 @@ import { ASSET_PATH } from "../../constants/assets";
 
 const thumbnailPositions = ["md:left-[117px]", "md:left-[344px]"];
 
-const SectionHeading = ({ children, className = "" }) => (
-  <h2 className={`font-display font-bold leading-[0.92] tracking-[0] text-[#FAD7D3] ${className}`}>
-    {children}
-  </h2>
-);
+const SectionHeading = ({ children, className = "" }) => <h2 className={`font-display font-bold leading-[0.92] tracking-[0] text-[#FAD7D3] ${className}`}>{children}</h2>;
 
 const storySectionSpacing = {
   default: "bg-white px-4 py-5 md:px-8 md:pt-[100px] md:pb-[120px]",
@@ -25,10 +21,7 @@ const TeamSection = ({ members, spacing = "default", thumbnails = [], variant = 
 
 const StoryTeamSection = ({ members, spacing }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const orderedMembers = useMemo(
-    () => members.map((_, index) => members[(activeIndex + index) % members.length]),
-    [activeIndex, members]
-  );
+  const orderedMembers = useMemo(() => members.map((_, index) => members[(activeIndex + index) % members.length]), [activeIndex, members]);
   const featured = orderedMembers[0];
   const thumbnails = orderedMembers.slice(1, 3);
 
@@ -95,9 +88,9 @@ const FindEpicTeamSection = ({ member, thumbnails }) => (
       </SectionHeading>
       <div className="grid grid-cols-[0.55fr_1fr] items-end gap-4 md:grid-cols-[207px_207px_400px]">
         {thumbnails.map((thumbnail) => (
-          <img key={thumbnail.name} src={`${ASSET_PATH}${thumbnail.image}`} alt={thumbnail.name} className="hidden aspect-[207/274] w-full object-cover md:block" />
+          <img key={thumbnail.name} src={`${ASSET_PATH}${thumbnail.image}`} alt={thumbnail.name} loading="lazy" className="hidden aspect-[207/274] w-full object-cover md:block" />
         ))}
-        <img src={`${ASSET_PATH}${member.image}`} alt={member.name} className="aspect-[298/372] w-full object-cover md:aspect-[400/500]" />
+        <img src={`${ASSET_PATH}${member.image}`} alt={member.name} loading="lazy" className="aspect-[298/372] w-full object-cover md:aspect-[400/500]" />
       </div>
       <article className="max-w-[240px]">
         <h3 className="text-[12px] font-normal uppercase leading-tight text-[#154527] md:text-[17px]">{member.name}</h3>
@@ -113,6 +106,7 @@ const TeamImage = ({ member, featured = false }) => (
     <img
       src={`${ASSET_PATH}${member.image}`}
       alt={member.name}
+      loading="lazy"
       className={
         featured
           ? "h-[372px] w-[298px] max-w-full object-cover transition duration-500 group-hover:scale-105 md:h-[500px] md:w-[400px]"
@@ -144,9 +138,7 @@ const TeamBio = ({ member, className = "", showArrow = true, onNext }) => (
   <article className={`relative max-w-[260px] ${className}`}>
     <h3 className="font-sans text-[12px] font-normal uppercase leading-tight text-[#154527] md:text-[20px]">{member.name}</h3>
     <p className="mt-0.5 font-sans text-[10px] font-light uppercase leading-tight text-[#154527] md:text-[16px]">{member.role}</p>
-    <p className="mb-4 mt-3 font-sans text-[10px] font-light leading-[14px] text-[#154527] md:mb-0 md:mt-5 md:text-[16px] md:leading-5">
-      {member.summary}
-    </p>
+    <p className="mb-4 mt-3 font-sans text-[10px] font-light leading-[14px] text-[#154527] md:mb-0 md:mt-5 md:text-[16px] md:leading-5">{member.summary}</p>
     {showArrow && <TeamArrow direction="next" onClick={onNext} className="md:hidden" />}
   </article>
 );

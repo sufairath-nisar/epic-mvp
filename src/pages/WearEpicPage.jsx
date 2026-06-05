@@ -98,11 +98,7 @@ const WearEpicPage = () => {
       <ProductCarousel title="Shop the Epic Performance Cap" products={caps} />
 
       {/* Lifestyle band */}
-      <img
-        src={`${ASSET_PATH}wear-band.png`}
-        alt="Epic Padel"
-        className="mt-[44px] h-[260px] w-full object-cover object-center md:mt-[80px] md:h-[420px]"
-      />
+      <img src={`${ASSET_PATH}wear-band.png`} alt="Epic Padel" className="mt-[44px] h-[260px] w-full object-cover object-center md:mt-[80px] md:h-[420px]" />
 
       <ProductCarousel title="Products You Recently Viewed" products={recentlyViewed} />
 

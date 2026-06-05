@@ -6,7 +6,17 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 const API_KEY = import.meta.env.VITE_API_KEY ?? "";
 
-export async function apiGet(path, params = {}) {
+// In-memory cache of GET requests, keyed by full URL. Stores the in-flight
+// promise so repeated calls (e.g. the navbar court list on every page) reuse
+// one request instead of hitting the network again. Failed requests are
+// evicted so they can be retried. Lives for the page session only.
+const getCache = new Map();
+
+export function clearApiCache() {
+  getCache.clear();
+}
+
+export async function apiGet(path, params = {}, { cache = true } = {}) {
   const query = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
@@ -17,18 +27,32 @@ export async function apiGet(path, params = {}) {
   const queryString = query.toString();
   const url = `${BASE_URL}${path}${queryString ? `?${queryString}` : ""}`;
 
-  const response = await fetch(url, {
-    headers: {
-      "x-api-key": API_KEY,
-      Accept: "application/json"
-    }
-  });
-
-  if (!response.ok) {
-    throw new Error(`API request failed (${response.status}) for ${path}`);
+  if (cache && getCache.has(url)) {
+    return getCache.get(url);
   }
 
-  return response.json();
+  const request = (async () => {
+    const response = await fetch(url, {
+      headers: {
+        "x-api-key": API_KEY,
+        Accept: "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed (${response.status}) for ${path}`);
+    }
+
+    return response.json();
+  })();
+
+  if (cache) {
+    getCache.set(url, request);
+    // Don't cache failures — allow a retry on the next call.
+    request.catch(() => getCache.delete(url));
+  }
+
+  return request;
 }
 
 export async function apiPost(path, body = {}) {

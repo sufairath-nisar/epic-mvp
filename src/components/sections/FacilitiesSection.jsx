@@ -84,7 +84,7 @@ const FacilitiesSection = ({ description, facilities, variant = "home" }) => {
 const FacilityCard = ({ facility, styles }) => (
   <article className={styles.cardWidth}>
     <div className={styles.iconBox}>
-      <img src={`${ASSET_PATH}${facility.icon}`} alt="" className={styles.icon} />
+      <img src={`${ASSET_PATH}${facility.icon}`} alt="" loading="lazy" className={styles.icon} />
     </div>
     <p className={styles.label}>{facility.label}</p>
   </article>

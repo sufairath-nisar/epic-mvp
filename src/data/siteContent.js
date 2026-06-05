@@ -13,8 +13,7 @@ export const locations = [
     name: "Tyson's Corner, VA",
     title: "Epic Padel is coming to Tysons Corner",
     image: "home-location-brand.png",
-    description:
-      "A full-scale indoor club designed around year-round play, premium amenities, and a connected community experience.",
+    description: "A full-scale indoor club designed around year-round play, premium amenities, and a connected community experience.",
     stats: ["Indoor courts", "Premium fitness", "Coworking lounge", "Spring 2026"]
   },
   {
@@ -22,8 +21,7 @@ export const locations = [
     name: "Milwaukee, WI",
     title: "Epic Padel is coming to Milwaukee",
     image: "home-location-2.png",
-    description:
-      "A future Epic destination bringing play, wellness, and social energy together in one thoughtfully designed club.",
+    description: "A future Epic destination bringing play, wellness, and social energy together in one thoughtfully designed club.",
     stats: ["Indoor courts", "Programs", "Private lessons", "Spring 2026"]
   }
 ];
@@ -52,7 +50,6 @@ export const membershipPlans = [
     benefits: ["Full facilities access", "Member-only events", "Advanced booking", "Guest invitations"]
   }
 ];
-
 
 export const products = [
   {

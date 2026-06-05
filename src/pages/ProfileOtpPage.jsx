@@ -3,8 +3,8 @@ import { X } from "lucide-react";
 import OverlayShell from "../components/layout/OverlayShell";
 import { ASSET_PATH } from "../constants/assets";
 import { Link, useRouter } from "../router/RouterProvider";
-import { verifyEmailOTP, loginWithOtp, setAuthToken, extractToken } from "../api/authApi";
-import { getProfileDetails } from "../utils/profileFlow";
+import { verifyEmailOTP, loginWithOtp, setAuthToken, extractToken, extractUser } from "../api/authApi";
+import { getProfileDetails, saveProfileDetails } from "../utils/profileFlow";
 
 const OTP_LENGTH = 4;
 const EXPIRY_SECONDS = 323; // 5:23
@@ -84,9 +84,15 @@ const ProfileOtpPage = () => {
       setVerifying(true);
       try {
         const response = await verifyRequest();
-        const token = Array.isArray(response) ? (extractToken(response[0]) ?? extractToken(response[1])) : extractToken(response);
+        const responses = Array.isArray(response) ? response : [response];
+        const token = responses.map(extractToken).find(Boolean) ?? null;
         if (token) {
           setAuthToken(token);
+        }
+        // Save the returned profile so the account page shows the bio.
+        const user = responses.map(extractUser).find(Boolean);
+        if (user) {
+          saveProfileDetails({ ...getProfileDetails(), ...user });
         }
         navigate("/account");
       } catch (verifyError) {

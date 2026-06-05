@@ -3,9 +3,7 @@ const AutoCarousel = ({ items, renderItem, className = "", trackClassName = "", 
 
   return (
     <div className={`overflow-hidden ${className}`}>
-      <div className={`flex w-max ${trackClassName}`}>
-        {carouselItems.map((item, index) => renderItem(item, `${getKey(item)}-${index}`, index))}
-      </div>
+      <div className={`flex w-max ${trackClassName}`}>{carouselItems.map((item, index) => renderItem(item, `${getKey(item)}-${index}`, index))}</div>
     </div>
   );
 };

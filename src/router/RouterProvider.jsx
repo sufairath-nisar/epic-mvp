@@ -39,6 +39,9 @@ export const RouterProvider = ({ children }) => {
   return <RouterContext.Provider value={value}>{children}</RouterContext.Provider>;
 };
 
+// The router hook intentionally lives alongside the provider/Link components.
+// This only disables a dev-time Fast Refresh hint, not a correctness rule.
+// eslint-disable-next-line react-refresh/only-export-components
 export const useRouter = () => {
   const context = useContext(RouterContext);
 

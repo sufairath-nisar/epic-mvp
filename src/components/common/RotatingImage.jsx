@@ -23,6 +23,7 @@ const RotatingImage = ({ images, alt, className = "", activeIndex = 0, placehold
       <img
         src={resolveImageSrc(primaryImage)}
         alt={alt}
+        loading="lazy"
         className={`h-full w-full object-cover transition duration-700 ${secondaryImage && activeIndex === 1 ? "opacity-0" : "opacity-100 group-hover:scale-105"}`}
       />
       {secondaryImage && (
@@ -30,6 +31,7 @@ const RotatingImage = ({ images, alt, className = "", activeIndex = 0, placehold
           src={resolveImageSrc(secondaryImage)}
           alt=""
           aria-hidden="true"
+          loading="lazy"
           className={`absolute inset-0 h-full w-full object-cover transition duration-700 ${activeIndex === 1 ? "opacity-100" : "opacity-0"}`}
         />
       )}
