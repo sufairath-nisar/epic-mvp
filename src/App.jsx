@@ -28,7 +28,7 @@ const AppRoutes = () => {
 
   if (path === "/our-story") return <StoryPage />;
   if (path === "/our-journal") return <JournalPage />;
-  if (path === "/our-journal/blog") return <ArticlePage />;
+  if (path === "/our-journal/blog" || path.startsWith("/our-journal/blog/")) return <ArticlePage />;
   if (path === "/find-epic") return <FindEpicPage />;
   if (path === "/join-epic/membership/checkout") return <MembershipCheckoutPage />;
   if (path === "/join-epic/membership") return <JoinMembershipPage />;
