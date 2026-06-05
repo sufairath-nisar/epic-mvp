@@ -192,7 +192,7 @@ const FindEpicPage = () => {
       <BillboardSection />
       <MembershipsSection plans={memberships} id="memberships" />
       <BookingExperienceSection bookingTabs={bookingTabs} sportTabs={sportTabs} variant="findEpic" />
-      <TeamSection members={findEpicTeamMembers} spacing="compact" variant="story" />
+      <TeamSection members={findEpicTeamMembers} spacing="compact" variant="story" mobileNextArrowClassName="bottom-[-3px] right-[-55px]" />
       <MembersTestimonialsSection testimonials={f31HomepageData.testimonials} variant="home" />
       <SiteFooter />
     </main>

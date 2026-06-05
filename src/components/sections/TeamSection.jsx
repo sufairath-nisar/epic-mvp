@@ -11,15 +11,17 @@ const storySectionSpacing = {
   compact: "bg-white px-4 pb-5 pt-2 md:px-8 md:pb-[120px] md:pt-[38px]"
 };
 
-const TeamSection = ({ members, spacing = "default", thumbnails = [], variant = "story" }) => {
+const TeamSection = ({ members, spacing = "default", thumbnails = [], variant = "story", mobileNextArrowClassName }) => {
   if (variant === "findEpic") {
     return <FindEpicTeamSection member={members[0]} thumbnails={thumbnails} />;
   }
 
-  return <StoryTeamSection members={members} spacing={spacing} />;
+  return <StoryTeamSection members={members} spacing={spacing} mobileNextArrowClassName={mobileNextArrowClassName} />;
 };
 
-const StoryTeamSection = ({ members, spacing }) => {
+// Default keeps the original placement; pages can override the mobile arrow
+// position without affecting any other page that uses this section.
+const StoryTeamSection = ({ members, spacing, mobileNextArrowClassName = "bottom-[-13px] right-[-37px]" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const orderedMembers = useMemo(() => members.map((_, index) => members[(activeIndex + index) % members.length]), [activeIndex, members]);
   const featured = orderedMembers[0];
@@ -42,7 +44,7 @@ const StoryTeamSection = ({ members, spacing }) => {
           </SectionHeading>
           <div className="relative mt-4 w-[298px] max-w-full">
             <TeamImage member={featured} featured />
-            <TeamArrow direction="next" onClick={goNextMobile} className="absolute bottom-[-13px] right-[-37px] z-10 md:hidden" />
+            <TeamArrow direction="next" onClick={goNextMobile} className={`absolute z-10 md:hidden ${mobileNextArrowClassName}`} />
           </div>
           <TeamBio member={featured} showArrow={false} onNext={goNextMobile} className="mt-3 max-w-[210px]" />
         </div>
