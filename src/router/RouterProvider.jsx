@@ -22,13 +22,15 @@ export const RouterProvider = ({ children }) => {
   const value = useMemo(
     () => ({
       path,
-      navigate(nextPath) {
+      navigate(nextPath, options = {}) {
         const normalized = normalizePath(nextPath);
         if (normalized !== window.location.pathname) {
           window.history.pushState({}, "", normalized);
         }
         setPath(normalized);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (options.scroll !== false) {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
       }
     }),
     [path]
@@ -47,7 +49,7 @@ export const useRouter = () => {
   return context;
 };
 
-export const Link = ({ to, children, className = "", ...props }) => {
+export const Link = ({ to, children, className = "", scroll = true, ...props }) => {
   const { navigate } = useRouter();
 
   return (
@@ -60,7 +62,7 @@ export const Link = ({ to, children, className = "", ...props }) => {
         }
 
         event.preventDefault();
-        navigate(to);
+        navigate(to, { scroll });
       }}
       {...props}
     >

@@ -109,24 +109,24 @@ const InvestmentsPage = () => {
 
       {/* Hero */}
       <section className="mx-auto max-w-[1440px] px-[24px] pt-[20px] md:px-[50px] md:pt-[34px]">
-        <div className="grid gap-[24px] md:grid-cols-4 md:items-start md:gap-[20px]">
+        <div className="grid gap-[14px] md:grid-cols-4 md:items-start md:gap-[20px]">
           <SectionHeading className="md:col-span-2 md:-mb-[17px]">
             our
             <br />
             investments
           </SectionHeading>
-          <p className="text-[12px] font-light leading-[18px] tracking-[0] text-[#547257] md:self-end md:text-[14px] md:leading-[20px]">
+          <p className="text-[12px] font-light leading-[16px] tracking-[0] text-[#547257] md:self-end md:text-[14px] md:leading-[20px] md:mb-[0px] mb-[10px]">
             We invest in padel startups driving innovation in the world's fastest-growing sport, focusing on U.S. and emerging market-based operators, professional leagues, tournaments, technology solutions, and performance apparel.
           </p>
           <div className="md:justify-self-end md:self-end">
-            <GetInTouchButton>Get in touch with us</GetInTouchButton>
+            <GetInTouchButton className="uppercase w-full md:w-auto">Get in touch with us</GetInTouchButton>
           </div>
         </div>
       </section>
 
       {/* Investment grid */}
-      <section className="mx-auto max-w-[1440px] px-[24px] pt-[40px] md:px-[50px] md:pt-[90px]">
-        <div className="grid grid-cols-2 gap-[16px] md:grid-cols-4 md:gap-[20px]">
+      <section className="mx-auto max-w-[1440px] px-[24px] pt-[20px] md:px-[50px] md:pt-[90px]">
+        <div className="grid grid-cols-2 gap-[10px] md:grid-cols-4 md:gap-[20px]">
           {investments.map((item) => (
             <InvestCard key={item.slug} item={item} />
           ))}
@@ -134,45 +134,47 @@ const InvestmentsPage = () => {
       </section>
 
       {/* Incubation */}
-      <section className="mx-auto max-w-[1440px] px-[24px] pt-[70px] md:px-[50px] md:pt-[120px]">
-        <div className="grid gap-[24px] md:grid-cols-2 md:items-start md:gap-[21px]">
+      <section className="mx-auto max-w-[1440px] px-[24px] pt-[30px] md:px-[50px] md:pt-[120px]">
+        <div className="grid gap-[15px] md:grid-cols-2 md:items-start md:gap-[21px]">
           <SectionHeading>incubation</SectionHeading>
-          <p className="text-[12px] font-light leading-[18px] tracking-[0] text-[#547257] md:pt-[18px] md:text-[14px] md:leading-[20px]">
+          <p className="text-[12px] font-light leading-[16px] tracking-[0] text-[#547257] md:pt-[18px] md:text-[14px] md:leading-[20px]">
             America is the innovation capital country of the world. We at EPIC strive to become the most innovative padel company in North America. As veteran venture capitalists we understand and appreciate the power of technology and its impact on our lives.
           </p>
         </div>
       </section>
 
       {/* CPL */}
-      <section className="mt-[48px] md:mt-[80px]">
-        <img src={`${ASSET_PATH}invest-cpl.png`} alt="College Padel League" className="h-[220px] w-full object-cover object-center md:h-[540px]" />
-        <div className="mx-auto max-w-[1440px] px-[24px] pt-[32px] md:px-[50px] md:pt-[48px]">
+      <section className="mt-[37px] md:mt-[80px]">
+        <img src={`${ASSET_PATH}invest-cpl-mobile.png`} alt="College Padel League" className="block w-full md:hidden" />
+        <img src={`${ASSET_PATH}invest-cpl.png`} alt="College Padel League" className="hidden h-[540px] w-full object-cover object-center md:block" />
+        <div className="mx-auto max-w-[1440px] px-[24px] pt-[28px] md:px-[50px] md:pt-[48px]">
           <h3 className="text-[18px] font-normal uppercase leading-[1.3] tracking-[0] text-[#154527] md:text-[24px]">College Padel League | CPL</h3>
-          <div className="mt-[20px] grid gap-[20px] text-[12px] font-light leading-[24px] tracking-[0] text-[#154527] md:mt-[24px] md:text-[16px] md:gap-[24px]">
+          <div className="mt-[23px] grid gap-[20px] text-[12px] font-light leading-[16px] tracking-[0] text-[#154527] md:mt-[24px] md:text-[16px] md:leading-[24px] md:gap-[24px]">
             {cplParagraphs.map((item, index) => (
               <div key={index}>
-                {item.title ? <p className="mb-[2px] font-normal">{item.title}</p> : null}
+                {item.title ? <p className="mb-[2px] uppercase font-normal">{item.title}</p> : null}
                 <p>{item.body}</p>
               </div>
             ))}
           </div>
-          <GetInTouchButton className="mt-[28px] md:text-[11px] md:mt-[45px]">Get in touch with CPL</GetInTouchButton>
+          <GetInTouchButton className="uppercase mt-[28px] md:text-[11px] w-full md:w-auto md:mt-[45px]">Get in touch with CPL</GetInTouchButton>
         </div>
       </section>
 
       {/* ZERO.40 */}
       <section className="mt-[48px] md:mt-[90px]">
-        <img src={`${ASSET_PATH}invest-zero40.png`} alt="Zero.40 booking app" className="h-[220px] w-full object-cover object-center md:h-[540px]" />
-        <div className="mx-auto max-w-[1440px] px-[24px] pt-[32px] md:px-[50px] md:pt-[48px]">
-          <h3 className="text-[18px] font-normal uppercase leading-none tracking-[0] text-[#154527] md:text-[24px]">Zero.40</h3>
-          <p className="mt-[20px] max-w-[900px] text-[12px] font-light leading-[24px] tracking-[0] text-[#154527] md:mt-[24px] md:text-[16px]">
+        <img src={`${ASSET_PATH}invest-zero40-mobile.png`} alt="Zero.40 booking app" className="block w-full md:hidden" />
+        <img src={`${ASSET_PATH}invest-zero40.png`} alt="Zero.40 booking app" className="hidden h-[540px] w-full object-cover object-center md:block" />
+        <div className="mx-auto max-w-[1440px] px-[24px] pt-[28px] md:px-[50px] md:pt-[48px]">
+          <h3 className="text-[24px] font-regular uppercase leading-none tracking-[0] text-[#154527] md:text-[24px]">Zero.40</h3>
+          <p className="mt-[20px] text-[12px] font-light leading-[16px] tracking-[0] text-[#154527] w-full md:mt-[24px] md:text-[16px] md:leading-[24px] md:w-auto">
             Zero.40 is a fully integrated booking app that allows EPIC Padel and future clients to white-label its services. Zero.40 offerings include a fully integrated court booking system, camera-based player tracking, padel rating management, and other features designed to streamline club operations, enhance the player experience, and provide real-time insights for members and management.
           </p>
-          <GetInTouchButton className="mt-[54px]">Get in touch with Zero.40</GetInTouchButton>
+          <GetInTouchButton className="mt-[35px] uppercase w-full md:w-auto md:mt-[54px]">Get in touch with Zero.40</GetInTouchButton>
         </div>
       </section>
 
-      <div className="mt-[60px] md:mt-[52px]">
+      <div className="mt-[75px] md:mt-[52px]">
         <SiteFooter />
       </div>
     </main>

@@ -18,6 +18,7 @@ const F31Header = ({ navigation, tone = "dark", floating = true }) => {
   const isDesktopSubmenuOpen = desktopSubmenuMode !== "closed";
   const isActivePath = (itemPath) => path === itemPath || (itemPath !== "/" && path.startsWith(`${itemPath}/`));
   const isWeAreEpicActive = path === "/our-story" || path === "/investments" || path === "/our-journal";
+  const isProfileActive = path === "/signin" || path.startsWith("/profile") || path.startsWith("/account");
   const weAreEpicLinks = [
     { label: "our story", path: "/our-story" },
     { label: "our investments", path: "/investments" },
@@ -100,8 +101,21 @@ const F31Header = ({ navigation, tone = "dark", floating = true }) => {
             )
           ))}
         </div>
-        <Link to="/profile" aria-label="Profile" className={`justify-self-end ${textColor} md:ml-16 md:block md:justify-self-auto`}>
-          <img src={`${ASSET_PATH}profile-icon.png`} alt="" className="h-[15px] w-[15px] object-contain md:h-[18px] md:w-[18px]" />
+        <Link to="/signin" aria-label="Profile" className={`justify-self-end transition hover:text-[#154527] active:text-[#154527] md:ml-16 md:block md:justify-self-auto ${isProfileActive ? "text-[#154527]" : textColor}`}>
+          <span
+            aria-hidden="true"
+            className="block h-[15px] w-[15px] bg-current md:h-[18px] md:w-[18px]"
+            style={{
+              WebkitMaskImage: `url(${ASSET_PATH}profile-icon.png)`,
+              maskImage: `url(${ASSET_PATH}profile-icon.png)`,
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+              WebkitMaskPosition: "center",
+              maskPosition: "center",
+              WebkitMaskSize: "contain",
+              maskSize: "contain"
+            }}
+          />
         </Link>
       </nav>
       {isMenuOpen && (
@@ -185,7 +199,7 @@ const F31Header = ({ navigation, tone = "dark", floating = true }) => {
               </Link>
             ))}
             <Link
-              to="/profile"
+              to="/signin"
               aria-label="Profile"
               className="fixed bottom-[22px] left-[33px]"
               onClick={() => {

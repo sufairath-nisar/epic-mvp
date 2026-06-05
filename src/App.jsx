@@ -12,6 +12,10 @@ import ProductPage from "./pages/ProductPage";
 import CartPage from "./pages/CartPage";
 import BookingPage from "./pages/BookingPage";
 import ProfilePage from "./pages/ProfilePage";
+import LoginPage from "./pages/LoginPage";
+import AccountPage from "./pages/AccountPage";
+import ProfileSignupPage from "./pages/ProfileSignupPage";
+import ProfileOtpPage from "./pages/ProfileOtpPage";
 import InvestmentsPage from "./pages/InvestmentsPage";
 import MembershipCheckoutPage from "./pages/MembershipCheckoutPage";
 
@@ -36,7 +40,11 @@ const AppRoutes = () => {
   if (path === "/booking" || path === "/booking/court" || path === "/booking/programs") return <BookingPage />;
   if (path === "/booking/checkout") return <BookingPage mode="checkout" />;
   if (path === "/booking/confirmation") return <BookingPage mode="confirmation" />;
-  if (path === "/profile") return <ProfilePage />;
+  if (path === "/account") return <AccountPage section="menu" />;
+  if (path.startsWith("/account/")) return <AccountPage section={path.split("/")[2] || "info"} />;
+  if (path === "/profile/otp") return <ProfileOtpPage />;
+  if (path === "/signin") return <ProfileSignupPage />;
+  if (path === "/profile") return <LoginPage />;
   if (path === "/profile/new" || path === "/profile/edit" || path === "/profile/save") {
     return <ProfilePage state={path.split("/").pop()} />;
   }

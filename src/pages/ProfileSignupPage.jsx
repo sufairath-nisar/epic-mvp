@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import OverlayShell from "../components/layout/OverlayShell";
 import { ASSET_PATH } from "../constants/assets";
 import { Link, useRouter } from "../router/RouterProvider";
-import { saveJoinDetails } from "../utils/joinFlow";
+import { saveProfileDetails } from "../utils/profileFlow";
 
 const initialForm = {
   firstName: "",
@@ -83,7 +83,7 @@ const SocialButton = ({ children }) => (
   </button>
 );
 
-const JoinEpicPage = () => {
+const ProfileSignupPage = () => {
   const { navigate } = useRouter();
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
@@ -110,9 +110,9 @@ const JoinEpicPage = () => {
       return;
     }
 
-    saveJoinDetails(form);
+    saveProfileDetails(form);
     setStatus("OTP sent successfully.");
-    navigate("/join-epic/otp");
+    navigate("/profile/otp");
   };
 
   return (
@@ -191,4 +191,4 @@ const JoinEpicPage = () => {
   );
 };
 
-export default JoinEpicPage;
+export default ProfileSignupPage;

@@ -307,7 +307,7 @@ const SummaryCard = ({ form, items, onChange, onConfirm, total }) => {
   ];
 
   return (
-  <aside className="rounded-[55px] bg-[#f4f4f4] px-[52px] pb-[54px] pt-[60px] text-[#154527] md:min-h-[642px]">
+  <aside className="rounded-[55px] bg-[#D9D9D933] px-[52px] pb-[54px] pt-[60px] text-[#154527] md:min-h-[642px]">
     <h2 className="text-[32px] font-light uppercase leading-none tracking-[0]">Order Summary</h2>
     <div className="mt-[55px] grid gap-[25px]">
       {items.map((item) => (
@@ -351,7 +351,7 @@ const SummaryCard = ({ form, items, onChange, onConfirm, total }) => {
 
 const WaiverCard = ({ error, form, onChange, onConfirm }) => {
   return (
-    <aside id="waiver" className="rounded-[55px] bg-[#f4f4f4] px-[52px] pb-[44px] pt-[58px] text-[#154527] md:min-h-[647px]">
+    <aside id="waiver" className="rounded-[55px] bg-[#D9D9D933] px-[52px] pb-[44px] pt-[58px] text-[#154527] md:min-h-[647px]">
       <h2 className="max-w-[360px] text-[20px] font-light uppercase leading-[29px] tracking-[0]">Epic Padel Inc. Liability Waiver and Release Agreement</h2>
       <div className="mt-[31px] grid gap-[23px] text-[12px] font-light leading-[16px] tracking-[0] text-[#547257]">
         <p>

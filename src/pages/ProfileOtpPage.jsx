@@ -13,7 +13,7 @@ const formatTime = (totalSeconds) => {
   return `${minutes}:${String(seconds).padStart(2, "0")}`;
 };
 
-const VerifyOtpPage = () => {
+const ProfileOtpPage = () => {
   const { navigate } = useRouter();
   const [otp, setOtp] = useState(() => Array(OTP_LENGTH).fill(""));
   const [error, setError] = useState("");
@@ -62,7 +62,7 @@ const VerifyOtpPage = () => {
     }
 
     setError("");
-    navigate("/join-epic/membership");
+    navigate("/account");
   };
 
   return (
@@ -130,4 +130,4 @@ const VerifyOtpPage = () => {
   );
 };
 
-export default VerifyOtpPage;
+export default ProfileOtpPage;

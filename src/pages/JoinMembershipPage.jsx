@@ -114,7 +114,7 @@ const JoinMembershipPage = () => {
           </Link>
         </section>
 
-        <section className="relative flex-1 bg-[#f4f4f4] px-[40px] pb-[40px] pt-[28px] md:h-[542px] md:px-[58px] md:pb-0 md:pt-[62px]">
+        <section className="relative flex-1 bg-[#D9D9D933] px-[40px] pb-[40px] pt-[28px] md:h-[542px] md:px-[58px] md:pb-0 md:pt-[62px]">
           <p className="text-[12px] font-light leading-none tracking-[0] text-[#154527]">Select your default location</p>
           <div className="mt-[12px]">
             <PillDropdown variant="box" label="Select your location" options={locations} value={location} onChange={setLocation} highlightSelected={false} />
