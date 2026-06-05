@@ -8,7 +8,7 @@ export const f31HomepageData = {
       city: "CHARLOTTE, NC",
       image: "home-location-1.png",
       images: ["home-location-1.png", "location-carousel-player.png"],
-      path: "/find-epic",
+      path: "/find-epic#memberships",
       description: "Epic Padel is Open Now at Prosperity Athletic Club's outdoor padel courts, flexible membership plans, and a vibrant community waiting for you.",
       cta: "VIEW MEMBERSHIPS"
     },

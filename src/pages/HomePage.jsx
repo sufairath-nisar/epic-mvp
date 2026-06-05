@@ -14,8 +14,8 @@ import { useSequentialImagePairs } from "../hooks/useSequentialImagePairs";
 import { Link } from "../router/RouterProvider";
 
 const Hero = ({ navigation }) => (
-  <section id="top" className="relative h-[124vw] min-h-[460px] max-h-[560px] overflow-hidden bg-[#b8b0a0] md:h-auto md:min-h-[820px] md:max-h-none">
-    <img src={`${ASSET_PATH}home-hero-player-mobile.png`} alt="Padel player" className="absolute inset-0 h-full w-full object-cover object-top md:hidden" />
+  <section id="top" className="relative aspect-[457/734] overflow-hidden bg-[#b8b0a0] md:aspect-auto md:h-auto md:min-h-[820px] md:max-h-none">
+    <img src={`${ASSET_PATH}home-hero-player-mobile.png`} alt="Padel player" className="absolute inset-0 h-full w-full object-cover object-center md:hidden" />
     <img src={`${ASSET_PATH}home-hero-player.png`} alt="Padel player" className="absolute inset-0 hidden h-full w-full object-cover object-center md:block" />
     <div className="absolute inset-0 bg-[#4b4f3f]/10" />
     <F31Header navigation={navigation} />

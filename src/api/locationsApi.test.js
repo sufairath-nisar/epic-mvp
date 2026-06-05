@@ -17,7 +17,7 @@ describe("mapCourtToLocation", () => {
     expect(result.images[0]).toBe("https://cdn/img.jpg");
     expect(result.images).toHaveLength(2);
     expect(result.description).toBe("Open now"); // HTML stripped
-    expect(result.path).toBe("/find-epic");
+    expect(result.path).toBe("/find-epic#memberships");
   });
 
   it("leaves images empty when the court has no cover image", () => {

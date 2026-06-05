@@ -10,6 +10,27 @@ const normalizePath = (path) => {
   return path.startsWith("/") ? path : `/${path}`;
 };
 
+// Scroll to an in-page anchor by id. The target may live on a lazily-loaded
+// page (or one whose content is still fetching), so poll a few frames until the
+// element exists before giving up.
+const scrollToHash = (hash) => {
+  const id = hash.replace(/^#/, "");
+  if (!id) {
+    return;
+  }
+
+  let attempts = 0;
+  const tryScroll = () => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else if (attempts++ < 60) {
+      window.setTimeout(tryScroll, 50);
+    }
+  };
+  tryScroll();
+};
+
 export const RouterProvider = ({ children }) => {
   const [path, setPath] = useState(() => normalizePath(window.location.pathname));
 
@@ -19,16 +40,28 @@ export const RouterProvider = ({ children }) => {
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
+  // On a direct load / refresh of a URL that carries a hash (e.g. shared link
+  // or opening the CTA in a new tab), scroll to that section once it renders.
+  useEffect(() => {
+    if (window.location.hash) {
+      scrollToHash(window.location.hash);
+    }
+  }, []);
+
   const value = useMemo(
     () => ({
       path,
       navigate(nextPath, options = {}) {
-        const normalized = normalizePath(nextPath);
-        if (normalized !== window.location.pathname) {
-          window.history.pushState({}, "", normalized);
+        const [rawPath, hash] = String(nextPath).split("#");
+        const normalized = normalizePath(rawPath);
+        const url = normalized + (hash ? `#${hash}` : "");
+        if (url !== window.location.pathname + window.location.hash) {
+          window.history.pushState({}, "", url);
         }
         setPath(normalized);
-        if (options.scroll !== false) {
+        if (hash) {
+          scrollToHash(hash);
+        } else if (options.scroll !== false) {
           window.scrollTo({ top: 0, behavior: "smooth" });
         }
       }

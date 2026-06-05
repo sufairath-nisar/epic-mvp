@@ -36,7 +36,7 @@ export function mapCourtToLocation(court) {
     image: apiImage,
     // Pair the API image (frame 1) with the court's second image (frame 2).
     images: apiImage ? [apiImage, getSecondaryImage(court)] : [],
-    path: "/find-epic",
+    path: "/find-epic#memberships",
     description: stripHtml(court.description ?? court.home_page_content),
     cta: "VIEW MEMBERSHIPS"
   };
