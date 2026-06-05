@@ -69,7 +69,7 @@ const defaultStyles = {
 
 const planKey = (plan) => plan.id ?? plan.name;
 
-const MembershipsSection = ({ plans, title = "our\nmemberships", styles = defaultStyles }) => {
+const MembershipsSection = ({ plans, title = "our\nmemberships", styles = defaultStyles, id }) => {
   const { navigate } = useRouter();
   const [selectedPlan, setSelectedPlan] = useState("");
 
@@ -81,7 +81,7 @@ const MembershipsSection = ({ plans, title = "our\nmemberships", styles = defaul
   };
 
   return (
-    <section className={styles.section}>
+    <section id={id} className={styles.section}>
       <div className={styles.container}>
         <h2 className={styles.heading}>
           {title.split("\n").map((line) => (

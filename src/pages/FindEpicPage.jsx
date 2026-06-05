@@ -1,7 +1,6 @@
 import { useState } from "react";
 import ArrowCircle from "../components/common/ArrowCircle";
 import F31Header from "../components/f31/F31Header";
-import { BookCourtCta } from "../components/f31/HeroCtas";
 import SiteFooter from "../components/layout/SiteFooter";
 import RotatingImage from "../components/common/RotatingImage";
 import BookingExperienceSection from "../components/sections/BookingExperienceSection";
@@ -16,7 +15,6 @@ import { teamMembers } from "../data/siteContent";
 import { useSequentialImagePairs } from "../hooks/useSequentialImagePairs";
 import { useFindEpicLocations } from "../hooks/useFindEpicLocations";
 import { useMembershipPackages } from "../hooks/useMembershipPackages";
-import { Link } from "../router/RouterProvider";
 
 const findEpicHero = {
   eyebrow: "Padel finds its pulse in Charlotte",
@@ -91,13 +89,18 @@ const FindEpicHero = ({ hero = findEpicHero }) => (
     <div className="absolute bottom-6 left-4 z-10 md:bottom-[152px] md:left-[50px]">
       <h1 className="max-w-[280px] text-[13px] font-light uppercase leading-[1.1] tracking-[0] text-[#fff4a8] md:max-w-[560px] md:text-[26px]">{hero.eyebrow}</h1>
       <div className="mt-2 flex items-start gap-2 md:mt-3 md:gap-4">
-        <BookCourtCta />
-        <Link
-          to="#"
+        <a
+          href="#join-epic"
+          className="flex h-[22px] w-[91px] items-center justify-center rounded-full bg-[#fff2a8] text-[8px] font-normal uppercase leading-none tracking-[0] text-epic-green transition hover:bg-[#154527] hover:text-[#fff2a8] md:h-[34px] md:w-[153px] md:text-[15px]"
+        >
+          Book a Court
+        </a>
+        <a
+          href="#memberships"
           className="flex h-[22px] w-[116px] items-center justify-center rounded-full border border-[#fff2a8] text-[8px] font-normal uppercase leading-none tracking-[0] text-[#fff2a8] transition hover:border-[#154527] hover:bg-[#154527] hover:text-[#fff2a8] md:h-[34px] md:w-[178px] md:text-[15px]"
         >
           View Memberships
-        </Link>
+        </a>
       </div>
     </div>
   </section>
@@ -187,7 +190,7 @@ const FindEpicPage = () => {
       <LocationIntro locations={locations} />
       <FacilitiesSection description={findEpicFacilitiesDescription} facilities={findEpicFacilities} variant="findEpic" />
       <BillboardSection />
-      <MembershipsSection plans={memberships} />
+      <MembershipsSection plans={memberships} id="memberships" />
       <BookingExperienceSection bookingTabs={bookingTabs} sportTabs={sportTabs} variant="findEpic" />
       <TeamSection members={findEpicTeamMembers} spacing="compact" variant="story" />
       <MembersTestimonialsSection testimonials={f31HomepageData.testimonials} variant="home" />
