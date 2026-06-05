@@ -14,14 +14,14 @@ import { useSequentialImagePairs } from "../hooks/useSequentialImagePairs";
 import { Link } from "../router/RouterProvider";
 
 const Hero = ({ navigation }) => (
-  <section id="top" className="relative h-[164vw] min-h-[560px] max-h-[690px] overflow-hidden bg-[#b8b0a0] md:h-auto md:min-h-[820px] md:max-h-none">
-    <img src={`${ASSET_PATH}home-hero-player-mobile.png`} alt="Padel player" className="absolute inset-0 h-full w-full object-cover object-center md:hidden" />
+  <section id="top" className="relative h-[124vw] min-h-[460px] max-h-[560px] overflow-hidden bg-[#b8b0a0] md:h-auto md:min-h-[820px] md:max-h-none">
+    <img src={`${ASSET_PATH}home-hero-player-mobile.png`} alt="Padel player" className="absolute inset-0 h-full w-full object-cover object-top md:hidden" />
     <img src={`${ASSET_PATH}home-hero-player.png`} alt="Padel player" className="absolute inset-0 hidden h-full w-full object-cover object-center md:block" />
     <div className="absolute inset-0 bg-[#4b4f3f]/10" />
     <F31Header navigation={navigation} />
-    <div className="absolute bottom-7 left-4 z-10 md:bottom-36 md:left-12">
+    <div className="absolute bottom-6 left-4 z-10 md:bottom-36 md:left-12">
       <h1 className="max-w-[205px] text-[11px] font-light uppercase leading-[1.05] tracking-wide text-[#fff4a8] md:max-w-3xl md:text-[32px] md:leading-none">WHERE PADEL FINDS ITS PULSE</h1>
-      <div className="mt-2 flex flex-row items-start gap-2 md:mt-5 md:gap-8">
+      <div className="mb-[15px] mt-2 flex flex-row items-start gap-2 md:mb-0 md:mt-5 md:gap-8">
         <BookCourtCta />
         <DownloadAppCta />
       </div>

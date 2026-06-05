@@ -112,7 +112,7 @@ export const teamMembers = [
     name: "Maryam Al Muslehi",
     role: "Founder",
     image: "team-maryam.png",
-    summary: "The visionary behind Epic's creation, guiding the brand's purpose, culture, and long-term growth from day one."
+    summary: "The visionary behind Epic's creation, guiding the brand's purpose, culture, and long-term growth."
   },
   {
     name: "Hala Sarkis",

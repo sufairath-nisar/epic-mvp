@@ -118,15 +118,6 @@ a {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .location-carousel-track,
-  .facility-carousel-track,
-  .facility-mobile-carousel-track,
-  .news-carousel-track {
-    animation: none;
-  }
-}
-
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;

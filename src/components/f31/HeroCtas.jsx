@@ -56,7 +56,7 @@ export const DownloadAppCta = () => {
 export const BookCourtCta = () => {
   return (
     <Link
-      to="/booking/court"
+      to="#"
       className="flex h-[22px] w-[91px] items-center justify-center rounded-full bg-[#fff2a8] text-[8px] font-normal uppercase leading-none tracking-[0] text-epic-green transition hover:bg-[#154527] hover:text-[#fff2a8] md:h-[34px] md:w-[153px] md:text-[15px]"
     >
       Book a Court
