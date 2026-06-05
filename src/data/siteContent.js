@@ -53,32 +53,6 @@ export const membershipPlans = [
   }
 ];
 
-export const articles = [
-  {
-    slug: "new-clubs",
-    title: "Building the next generation of padel clubs",
-    category: "Design",
-    date: "May 2026",
-    image: "home-billboard.png",
-    excerpt: "How Epic blends sport, hospitality, retail, and community into one club experience."
-  },
-  {
-    slug: "play-culture",
-    title: "A racquet sport culture made for modern members",
-    category: "Community",
-    date: "May 2026",
-    image: "home-location-2.png",
-    excerpt: "From social matches to structured programs, clubs work best when the experience feels alive."
-  },
-  {
-    slug: "wear-epic",
-    title: "Wear Epic arrives with essentials for court life",
-    category: "Shop",
-    date: "April 2026",
-    image: "product-zip-green.png",
-    excerpt: "A soft goods capsule built around easy silhouettes, club colors, and everyday use."
-  }
-];
 
 export const products = [
   {

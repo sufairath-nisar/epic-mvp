@@ -11,7 +11,6 @@ import WearEpicPage from "./pages/WearEpicPage";
 import ProductPage from "./pages/ProductPage";
 import CartPage from "./pages/CartPage";
 import BookingPage from "./pages/BookingPage";
-import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
 import AccountPage from "./pages/AccountPage";
 import ProfileSignupPage from "./pages/ProfileSignupPage";
@@ -45,9 +44,6 @@ const AppRoutes = () => {
   if (path === "/profile/otp") return <ProfileOtpPage />;
   if (path === "/signin") return <ProfileSignupPage />;
   if (path === "/profile") return <LoginPage />;
-  if (path === "/profile/new" || path === "/profile/edit" || path === "/profile/save") {
-    return <ProfilePage state={path.split("/").pop()} />;
-  }
   if (path === "/investments") return <InvestmentsPage />;
 
   return <HomePage />;
