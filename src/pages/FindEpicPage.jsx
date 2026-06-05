@@ -14,6 +14,8 @@ import { f31HomepageData } from "../data/f31Homepage";
 import { mainNavigation } from "../data/routes";
 import { teamMembers } from "../data/siteContent";
 import { useSequentialImagePairs } from "../hooks/useSequentialImagePairs";
+import { useFindEpicLocations } from "../hooks/useFindEpicLocations";
+import { useMembershipPackages } from "../hooks/useMembershipPackages";
 import { Link } from "../router/RouterProvider";
 
 const findEpicHero = {
@@ -37,61 +39,6 @@ const findEpicFacilities = [
   { label: "COWORKING & LOUNGE SPACES", icon: "find-epic-facility-lounge.svg" }
 ];
 
-const findEpicMemberships = [
-  {
-    name: "founding",
-    badge: "50% off - 15 of 50 left",
-    audience: ["Limited time", "Founding member pricing"],
-    price: "$149",
-    period: "/month for First 3 Months",
-    billing: "or $2958 billed annually",
-    highlight: "#FCEFA7",
-    benefits: [
-      "All inclusive court access",
-      "Zero booking fees",
-      "Free rentals",
-      "2 guests per month",
-      "15% off lessons, clinics & tournaments",
-      "Access to exclusive events",
-      "Epic welcome pack",
-      "1 year contract"
-    ]
-  },
-  {
-    name: "epic junior",
-    audience: ["for young athletes", "under 17 y.o"],
-    price: "$59",
-    period: "/month",
-    billing: "or $675 billed annually",
-    highlight: "#FAD7D3",
-    benefits: [
-      "1 90-minute court session / week (off-peak only)",
-      "1 peak-time session / week",
-      "Special rate on extra court sessions",
-      "Book up to 5 days in advance",
-      "5% off private lessons & junior clinics",
-      "Access to junior tournaments & development programs"
-    ]
-  },
-  {
-    name: "padel+",
-    audience: ["single", "under 40 y.o"],
-    price: "$80",
-    period: "/month",
-    billing: "or $912 billed annually",
-    highlight: "#154527",
-    benefits: [
-      "Full facilities access",
-      "Special rate on wellness & recovery: cold plunge & sauna",
-      "Zero booking fees for padel & pickleball",
-      "Special rates for tennis courts",
-      "Book up to 7 days in advance",
-      "Access to member events",
-      "Special rates on programs & lessons"
-    ]
-  }
-];
-
 const santiago = {
   name: "Santiago",
   role: "Director of Racquet Sports",
@@ -106,7 +53,8 @@ const findEpicFacilitiesDescription = (
     The club is fully equipped to support both play and downtime, with indoor courts, locker and refresh areas, a dedicated fitness center, and comfortable locker rooms with showers.
     <br />
     <br />
-    On-site cafe and juice bar options make it easy to refuel between sessions, while shared workspaces and retail touches round out the experience, creating a warm designed for full days, not just match time.
+    On-site cafe and juice bar options make it easy to refuel between sessions, while shared workspaces and retail touches round out the experience, creating a warm designed for full days, not just
+    match time.
   </>
 );
 
@@ -141,12 +89,13 @@ const FindEpicHero = ({ hero = findEpicHero }) => (
     <FindEpicHeroMedia media={hero.media} />
     <F31Header navigation={mainNavigation} />
     <div className="absolute bottom-6 left-4 z-10 md:bottom-[152px] md:left-[50px]">
-      <h1 className="max-w-[280px] text-[13px] font-light uppercase leading-[1.1] tracking-[0] text-[#fff4a8] md:max-w-[560px] md:text-[26px]">
-        {hero.eyebrow}
-      </h1>
+      <h1 className="max-w-[280px] text-[13px] font-light uppercase leading-[1.1] tracking-[0] text-[#fff4a8] md:max-w-[560px] md:text-[26px]">{hero.eyebrow}</h1>
       <div className="mt-2 flex items-start gap-2 md:mt-3 md:gap-4">
         <BookCourtCta />
-        <Link to="/join-epic/membership" className="flex h-[22px] w-[116px] items-center justify-center rounded-full border border-[#fff2a8] text-[8px] font-normal uppercase leading-none tracking-[0] text-[#fff2a8] transition hover:border-[#154527] hover:bg-[#154527] hover:text-[#fff2a8] md:h-[34px] md:w-[178px] md:text-[15px]">
+        <Link
+          to="/join-epic/membership"
+          className="flex h-[22px] w-[116px] items-center justify-center rounded-full border border-[#fff2a8] text-[8px] font-normal uppercase leading-none tracking-[0] text-[#fff2a8] transition hover:border-[#154527] hover:bg-[#154527] hover:text-[#fff2a8] md:h-[34px] md:w-[178px] md:text-[15px]"
+        >
           View Memberships
         </Link>
       </div>
@@ -154,17 +103,15 @@ const FindEpicHero = ({ hero = findEpicHero }) => (
   </section>
 );
 
-const PageHeading = ({ children, className = "" }) => (
-  <h2 className={`font-display font-bold leading-[0.9] tracking-[0] text-[#FAD7D3] ${className}`}>
-    {children}
-  </h2>
-);
+const PageHeading = ({ children, className = "" }) => <h2 className={`font-display font-bold leading-[0.9] tracking-[0] text-[#FAD7D3] ${className}`}>{children}</h2>;
 
 const LocationIntro = ({ locations }) => {
   const [locationIndex, setLocationIndex] = useState(0);
   const activeImageIndexes = useSequentialImagePairs(locations.length, 1200);
-  const activeLocation = locations[locationIndex];
-  const visibleLocations = [locations[locationIndex], locations[(locationIndex + 1) % locations.length]];
+  const hasLocations = locations.length > 0;
+  const hasMultiple = locations.length > 1;
+  const activeLocation = hasLocations ? locations[locationIndex] : null;
+  const visibleLocations = hasMultiple ? [locations[locationIndex], locations[(locationIndex + 1) % locations.length]] : locations;
   const showNextLocationPair = () => setLocationIndex((current) => (current + 1) % locations.length);
 
   return (
@@ -178,41 +125,42 @@ const LocationIntro = ({ locations }) => {
           </PageHeading>
           <div className="max-w-[640px] md:mt-0">
             <p className="text-[9px] font-light leading-[14px] text-[#154527] md:text-[13px] md:leading-[19px]">
-              Epic Padel Charlotte is where the city comes to play, connect, and move together. Located at Prosperity Athletic Club, this outdoor yet secure blend helps local players compete with an ease, social energy that makes the court as good off court as it does on it.
+              Epic Padel Charlotte is where the city comes to play, connect, and move together. Located at Prosperity Athletic Club, this outdoor yet secure blend helps local players compete with an
+              ease, social energy that makes the court as good off court as it does on it.
             </p>
             <p className="mt-3 text-[9px] font-light leading-[14px] text-[#154527] md:text-[13px] md:leading-[19px]">
-              With purpose-built courts, thoughtful amenities, and a community-first atmosphere, Charlotte is designed for players of all levels: from first-time hitters to regular competitors. It's a place to rally after work, spend weekends with friends and family, and feel part of something bigger than just the game.
+              With purpose-built courts, thoughtful amenities, and a community-first atmosphere, Charlotte is designed for players of all levels: from first-time hitters to regular competitors. It's a
+              place to rally after work, spend weekends with friends and family, and feel part of something bigger than just the game.
             </p>
-            <p className="mt-3 text-[9px] font-light leading-[14px] text-[#154527] md:text-[13px] md:leading-[19px]">
-              This is padel, Charlotte-style: welcoming, active, and full of pulse.
-            </p>
+            <p className="mt-3 text-[9px] font-light leading-[14px] text-[#154527] md:text-[13px] md:leading-[19px]">This is padel, Charlotte-style: welcoming, active, and full of pulse.</p>
           </div>
         </div>
 
-        <div className="mt-5 md:hidden">
-          <RotatingImage
-            images={activeLocation.images}
-            alt={activeLocation.city}
-            activeIndex={activeImageIndexes[locationIndex]}
-            className="group aspect-[298/372] w-full bg-[#e5e2d8]"
-          />
-          <div className="mt-5 flex justify-center">
-            <ArrowCircle label="Show next location" onClick={showNextLocationPair} size="sm" tone="pink" />
-          </div>
-        </div>
+        {hasLocations ? (
+          <>
+            <div className="mt-5 md:hidden">
+              <RotatingImage images={activeLocation.images} alt={activeLocation.city} activeIndex={activeImageIndexes[locationIndex]} className="group aspect-[298/372] w-full bg-[#e5e2d8]" />
+              {hasMultiple && (
+                <div className="mt-5 flex justify-center">
+                  <ArrowCircle label="Show next location" onClick={showNextLocationPair} size="sm" tone="pink" />
+                </div>
+              )}
+            </div>
 
-        <div className="relative mt-5 hidden gap-4 md:mt-[86px] md:grid md:grid-cols-[440px_1fr] md:items-start md:gap-4 md:pr-[52px]">
-          {visibleLocations.map((location, index) => (
-            <RotatingImage
-              key={`${location.id}-${index}`}
-              images={location.images}
-              alt={location.city}
-              activeIndex={activeImageIndexes[(locationIndex + index) % locations.length]}
-              className="group aspect-[298/372] w-full bg-[#e5e2d8] md:h-[535px] md:aspect-auto"
-            />
-          ))}
-          <ArrowCircle className="absolute bottom-2 right-0 flex" label="Show next location" onClick={showNextLocationPair} size="sm" tone="pink" />
-        </div>
+            <div className="relative mt-5 hidden gap-4 md:mt-[86px] md:grid md:grid-cols-[440px_1fr] md:items-start md:gap-4 md:pr-[52px]">
+              {visibleLocations.map((location, index) => (
+                <RotatingImage
+                  key={`${location.id}-${index}`}
+                  images={location.images}
+                  alt={location.city}
+                  activeIndex={activeImageIndexes[(locationIndex + index) % locations.length]}
+                  className="group aspect-[298/372] w-full bg-[#e5e2d8] md:h-[535px] md:aspect-auto"
+                />
+              ))}
+              {hasMultiple && <ArrowCircle className="absolute bottom-2 right-0 flex" label="Show next location" onClick={showNextLocationPair} size="sm" tone="pink" />}
+            </div>
+          </>
+        ) : null}
       </div>
     </section>
   );
@@ -228,14 +176,18 @@ const BillboardSection = () => (
 
 const FindEpicPage = () => {
   const { sportTabs, bookingTabs } = f31HomepageData;
+  const locations = useFindEpicLocations();
+  const { packages } = useMembershipPackages();
+  // Show fully-populated cards first; "Not uploaded yet" cards fall to the end.
+  const memberships = [...packages].sort((a, b) => Number(b.isComplete) - Number(a.isComplete));
 
   return (
     <main className="min-h-screen bg-white font-sans text-[#154527]">
       <FindEpicHero />
-      <LocationIntro locations={f31HomepageData.locations} />
+      <LocationIntro locations={locations} />
       <FacilitiesSection description={findEpicFacilitiesDescription} facilities={findEpicFacilities} variant="findEpic" />
       <BillboardSection />
-      <MembershipsSection plans={findEpicMemberships} />
+      <MembershipsSection plans={memberships} />
       <BookingExperienceSection bookingTabs={bookingTabs} sportTabs={sportTabs} variant="findEpic" />
       <TeamSection members={findEpicTeamMembers} spacing="compact" variant="story" />
       <MembersTestimonialsSection testimonials={f31HomepageData.testimonials} variant="home" />

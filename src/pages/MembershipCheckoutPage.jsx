@@ -6,6 +6,8 @@ import SiteFooter from "../components/layout/SiteFooter";
 import { ASSET_PATH } from "../constants/assets";
 import { mainNavigation } from "../data/routes";
 import { Link } from "../router/RouterProvider";
+import { getSelectedMembership } from "../utils/membershipFlow";
+import { getJoinDetails } from "../utils/joinFlow";
 
 const membershipBenefits = [
   "All inclusive court access",
@@ -42,6 +44,40 @@ const initialCartItems = [
 ];
 
 const formatCurrency = (value) => `$${value.toFixed(2)}`;
+
+const NOT_UPLOADED = "Not uploaded yet";
+const cleanText = (value) => (value && value !== NOT_UPLOADED ? value : "");
+
+// Build a cart line from the membership plan selected on /join-epic/membership.
+const planToCartItem = (plan) => ({
+  id: String(plan.id),
+  title: plan.name,
+  summaryTitle: plan.name,
+  subtitle: cleanText(plan.audience?.[0]),
+  summarySubtitle: cleanText(plan.audience?.[0]),
+  cartPrice: `${plan.price}${plan.period || ""}`,
+  price: typeof plan.amount === "number" ? plan.amount : 0,
+  benefits: (plan.benefits ?? []).filter((benefit) => benefit && benefit !== NOT_UPLOADED)
+});
+
+// Selected plan from the join flow becomes the cart; otherwise fall back to the
+// sample cart so the page still renders if opened directly.
+const getInitialCartItems = () => {
+  const selected = getSelectedMembership();
+  return selected ? [planToCartItem(selected)] : initialCartItems;
+};
+
+// Prefill contact details from the join sign-up step when available.
+const getInitialForm = () => {
+  const details = getJoinDetails();
+  const fullName = [details.firstName, details.lastName].filter(Boolean).join(" ").trim();
+  return {
+    ...initialCheckoutForm,
+    fullName: fullName || initialCheckoutForm.fullName,
+    email: details.email || initialCheckoutForm.email,
+    phone: details.mobile || initialCheckoutForm.phone
+  };
+};
 
 const initialCheckoutForm = {
   fullName: "",
@@ -156,9 +192,7 @@ const CartDetails = ({ error, items, total, onRemoveItem }) => (
 
     <div className="mt-[20px]">
       {items.length > 0 ? (
-        items.map((item) => (
-          <CartLine key={item.id} item={item} onRemove={onRemoveItem} />
-        ))
+        items.map((item) => <CartLine key={item.id} item={item} onRemove={onRemoveItem} />)
       ) : (
         <p className="border-b border-[#e7e7e7] py-[60px] text-[15px] font-normal text-[#547257]">Your cart is empty.</p>
       )}
@@ -213,7 +247,9 @@ const ContactDetails = ({ errors, form, onBlur, onChange }) => {
         <CheckoutInput error={errors.phone} label="Phone Number" name="phone" onBlur={onBlur} onChange={onChange} placeholder="+1  Enter your phone number" value={form.phone} />
       </div>
       <div className="mt-[33px] grid gap-[23px]">
-        <CheckboxLine checked={form.isAdult} error={errors.isAdult} name="isAdult" onBlur={onBlur} onChange={onChange}>I confirm that I am 18 years of age or older</CheckboxLine>
+        <CheckboxLine checked={form.isAdult} error={errors.isAdult} name="isAdult" onBlur={onBlur} onChange={onChange}>
+          I confirm that I am 18 years of age or older
+        </CheckboxLine>
         <CheckboxLine checked={form.acceptedWaiver} error={errors.acceptedWaiver} name="acceptedWaiver" onBlur={onBlur} onChange={onChange}>
           I have read and agree to the&nbsp;
           <a href="#waiver" className="font-light uppercase underline">
@@ -255,46 +291,46 @@ const PaymentTab = ({ active = false, children, onClick }) => (
 
 const PaymentDetails = ({ errors, form, onBlur, onChange }) => {
   return (
-  <section className="mt-[61px]">
-    <SectionLabel>Payment Details</SectionLabel>
-    <div className="mt-[30px] grid gap-[19px]">
-      <div className="grid gap-[18px] md:grid-cols-3">
-        <PaymentTab active={form.paymentMethod === "card"} onClick={() => onChange("paymentMethod", "card")}>
-          <span className="mr-auto pl-[15px]">Card</span>
-          <span className="mr-[13px] inline-flex items-center gap-[5px]">
-            <span className="text-[9px] font-bold text-[#183f91]">VISA</span>
-            <span className="h-[14px] w-[14px] rounded-full bg-[#e8232f]" />
-            <span className="-ml-[8px] h-[14px] w-[14px] rounded-full bg-[#f4a81d]/90" />
-          </span>
-        </PaymentTab>
-        <PaymentTab active={form.paymentMethod === "apple-pay"} onClick={() => onChange("paymentMethod", "apple-pay")}>
-          <img src={`${ASSET_PATH}apple-pay.svg`} alt="Apple Pay" className="h-[14px] w-[30px] object-contain" />
-        </PaymentTab>
-        <PaymentTab active={form.paymentMethod === "wallet"} onClick={() => onChange("paymentMethod", "wallet")}>
-          <span className="mr-[6px] pl-[15px] whitespace-nowrap">Use Wallet Balance</span>
-          <span className="mr-auto text-[#d3d3d3]">$2,000</span>
-          <Wallet className="mr-[12px]" size={17} strokeWidth={1.6} />
-        </PaymentTab>
+    <section className="mt-[61px]">
+      <SectionLabel>Payment Details</SectionLabel>
+      <div className="mt-[30px] grid gap-[19px]">
+        <div className="grid gap-[18px] md:grid-cols-3">
+          <PaymentTab active={form.paymentMethod === "card"} onClick={() => onChange("paymentMethod", "card")}>
+            <span className="mr-auto pl-[15px]">Card</span>
+            <span className="mr-[13px] inline-flex items-center gap-[5px]">
+              <span className="text-[9px] font-bold text-[#183f91]">VISA</span>
+              <span className="h-[14px] w-[14px] rounded-full bg-[#e8232f]" />
+              <span className="-ml-[8px] h-[14px] w-[14px] rounded-full bg-[#f4a81d]/90" />
+            </span>
+          </PaymentTab>
+          <PaymentTab active={form.paymentMethod === "apple-pay"} onClick={() => onChange("paymentMethod", "apple-pay")}>
+            <img src={`${ASSET_PATH}apple-pay.svg`} alt="Apple Pay" className="h-[14px] w-[30px] object-contain" />
+          </PaymentTab>
+          <PaymentTab active={form.paymentMethod === "wallet"} onClick={() => onChange("paymentMethod", "wallet")}>
+            <span className="mr-[6px] pl-[15px] whitespace-nowrap">Use Wallet Balance</span>
+            <span className="mr-auto text-[#d3d3d3]">$2,000</span>
+            <Wallet className="mr-[12px]" size={17} strokeWidth={1.6} />
+          </PaymentTab>
+        </div>
+        <CheckoutInput error={errors.cardName} label="Name on Card" name="cardName" onBlur={onBlur} onChange={onChange} placeholder="As shown on card" value={form.cardName} />
+        <CheckoutInput error={errors.cardNumber} label="Card Number" name="cardNumber" onBlur={onBlur} onChange={onChange} placeholder="0000 0000 0000 0000" value={form.cardNumber} />
+        <div className="grid gap-[18px] md:grid-cols-3">
+          <label className="block font-sans text-[12px] font-light leading-none tracking-[0] text-[#154527] md:col-span-2 md:text-[12px]">
+            Expiry
+            <div className="mt-[12px] grid grid-cols-2 gap-[18px]">
+              <PaymentField error={errors.expiryMonth} name="expiryMonth" onBlur={onBlur} onChange={onChange} placeholder="MM" value={form.expiryMonth} />
+              <PaymentField error={errors.expiryYear} name="expiryYear" onBlur={onBlur} onChange={onChange} placeholder="YY" value={form.expiryYear} />
+            </div>
+          </label>
+          <label className="block font-sans text-[12px] font-light leading-none tracking-[0] text-[#154527] md:text-[12px]">
+            CVV
+            <div className="mt-[12px]">
+              <PaymentField error={errors.cvv} name="cvv" onBlur={onBlur} onChange={onChange} placeholder="CVV" value={form.cvv} />
+            </div>
+          </label>
+        </div>
       </div>
-      <CheckoutInput error={errors.cardName} label="Name on Card" name="cardName" onBlur={onBlur} onChange={onChange} placeholder="As shown on card" value={form.cardName} />
-      <CheckoutInput error={errors.cardNumber} label="Card Number" name="cardNumber" onBlur={onBlur} onChange={onChange} placeholder="0000 0000 0000 0000" value={form.cardNumber} />
-      <div className="grid gap-[18px] md:grid-cols-3">
-        <label className="block font-sans text-[12px] font-light leading-none tracking-[0] text-[#154527] md:col-span-2 md:text-[12px]">
-          Expiry
-          <div className="mt-[12px] grid grid-cols-2 gap-[18px]">
-            <PaymentField error={errors.expiryMonth} name="expiryMonth" onBlur={onBlur} onChange={onChange} placeholder="MM" value={form.expiryMonth} />
-            <PaymentField error={errors.expiryYear} name="expiryYear" onBlur={onBlur} onChange={onChange} placeholder="YY" value={form.expiryYear} />
-          </div>
-        </label>
-        <label className="block font-sans text-[12px] font-light leading-none tracking-[0] text-[#154527] md:text-[12px]">
-          CVV
-          <div className="mt-[12px]">
-            <PaymentField error={errors.cvv} name="cvv" onBlur={onBlur} onChange={onChange} placeholder="CVV" value={form.cvv} />
-          </div>
-        </label>
-      </div>
-    </div>
-  </section>
+    </section>
   );
 };
 
@@ -307,45 +343,45 @@ const SummaryCard = ({ form, items, onChange, onConfirm, total }) => {
   ];
 
   return (
-  <aside className="rounded-[55px] bg-[#D9D9D933] px-[52px] pb-[54px] pt-[60px] text-[#154527] md:min-h-[642px]">
-    <h2 className="text-[32px] font-light uppercase leading-none tracking-[0]">Order Summary</h2>
-    <div className="mt-[55px] grid gap-[25px]">
-      {items.map((item) => (
-        <div key={item.title} className="grid grid-cols-[1fr_35px_72px] gap-6 text-[12px] font-light leading-[15px] tracking-[0] text-[#547257] md:text-[12px]">
-          <div>
-            <p>{item.summaryTitle}</p>
-            <p>{item.summarySubtitle}</p>
+    <aside className="rounded-[55px] bg-[#D9D9D933] px-[52px] pb-[54px] pt-[60px] text-[#154527] md:min-h-[642px]">
+      <h2 className="text-[32px] font-light uppercase leading-none tracking-[0]">Order Summary</h2>
+      <div className="mt-[55px] grid gap-[25px]">
+        {items.map((item) => (
+          <div key={item.title} className="grid grid-cols-[1fr_35px_72px] gap-6 text-[12px] font-light leading-[15px] tracking-[0] text-[#547257] md:text-[12px]">
+            <div>
+              <p>{item.summaryTitle}</p>
+              <p>{item.summarySubtitle}</p>
+            </div>
+            <p>x1</p>
+            <p className="text-right">{formatCurrency(item.price)}</p>
           </div>
-          <p>x1</p>
-          <p className="text-right">{formatCurrency(item.price)}</p>
-        </div>
-      ))}
-    </div>
-    <input
-      value={form.discountCode}
-      onChange={(event) => onChange("discountCode", event.target.value)}
-      className="mt-[26px] h-[38px] w-full rounded-[6px] border-0 bg-white px-[17px] text-[12px] font-light outline-none placeholder:text-[#d7d7d7]"
-      placeholder="Discount code or gift card"
-    />
-    <div className="mt-[137px] grid gap-[3px] text-[10px] font-light leading-[14px] tracking-[0] text-[#547257]">
-      {summaryRows.map(([label, value]) => (
-        <div key={label} className="flex justify-between">
-          <span>{label}</span>
-          <span>{value}</span>
-        </div>
-      ))}
-    </div>
-    <div className="mt-[27px] flex justify-between text-[12px] font-light leading-none text-[#154527]">
-      <span>Total</span>
-      <span>{formatCurrency(total)}</span>
-    </div>
-    <div className="mt-[30px] border-t border-[#dedede] pt-[36px] text-center">
-      <Link to="/join-epic" className="text-[10px] font-normal leading-none text-[#547257] transition hover:text-[#154527]">
-        Explore more memberships
-      </Link>
-      <ConfirmButton className="mt-[24px]" onClick={onConfirm} />
-    </div>
-  </aside>
+        ))}
+      </div>
+      <input
+        value={form.discountCode}
+        onChange={(event) => onChange("discountCode", event.target.value)}
+        className="mt-[26px] h-[38px] w-full rounded-[6px] border-0 bg-white px-[17px] text-[12px] font-light outline-none placeholder:text-[#d7d7d7]"
+        placeholder="Discount code or gift card"
+      />
+      <div className="mt-[137px] grid gap-[3px] text-[10px] font-light leading-[14px] tracking-[0] text-[#547257]">
+        {summaryRows.map(([label, value]) => (
+          <div key={label} className="flex justify-between">
+            <span>{label}</span>
+            <span>{value}</span>
+          </div>
+        ))}
+      </div>
+      <div className="mt-[27px] flex justify-between text-[12px] font-light leading-none text-[#154527]">
+        <span>Total</span>
+        <span>{formatCurrency(total)}</span>
+      </div>
+      <div className="mt-[30px] border-t border-[#dedede] pt-[36px] text-center">
+        <Link to="/join-epic" className="text-[10px] font-normal leading-none text-[#547257] transition hover:text-[#154527]">
+          Explore more memberships
+        </Link>
+        <ConfirmButton className="mt-[24px]" onClick={onConfirm} />
+      </div>
+    </aside>
   );
 };
 
@@ -355,10 +391,12 @@ const WaiverCard = ({ error, form, onChange, onConfirm }) => {
       <h2 className="max-w-[360px] text-[20px] font-light uppercase leading-[29px] tracking-[0]">Epic Padel Inc. Liability Waiver and Release Agreement</h2>
       <div className="mt-[31px] grid gap-[23px] text-[12px] font-light leading-[16px] tracking-[0] text-[#547257]">
         <p>
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a
+          galley of type and scrambled it to make a type specimen book.
         </p>
         <p>
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a
+          galley of type and scrambled it to make a type specimen book.
         </p>
       </div>
       <label className="mt-[28px] block text-[13px] font-medium leading-none text-[#154527]">
@@ -369,7 +407,12 @@ const WaiverCard = ({ error, form, onChange, onConfirm }) => {
             onChange={(event) => onChange("signature", event.target.value)}
             className={`h-[57px] w-full rounded-[6px] border bg-white px-[18px] pr-[42px] outline-none ${error ? "border-[#e43d2d]" : "border-transparent"}`}
           />
-          <button type="button" aria-label="Clear signature" onClick={() => onChange("signature", "")} className="absolute right-[9px] top-[8px] flex h-[24px] w-[24px] items-center justify-center text-[#d1d1d1] transition hover:text-[#154527]">
+          <button
+            type="button"
+            aria-label="Clear signature"
+            onClick={() => onChange("signature", "")}
+            className="absolute right-[9px] top-[8px] flex h-[24px] w-[24px] items-center justify-center text-[#d1d1d1] transition hover:text-[#154527]"
+          >
             <Trash2 size={12} strokeWidth={1.7} />
           </button>
         </div>
@@ -381,14 +424,18 @@ const WaiverCard = ({ error, form, onChange, onConfirm }) => {
 };
 
 const ConfirmButton = ({ className = "", onClick }) => (
-  <button type="button" onClick={onClick} className={`h-[40px] w-full rounded-full bg-[#154527] text-[12px] font-light uppercase leading-none tracking-[0] text-[#FCEFA7] transition hover:bg-[#FCEFA7] hover:text-[#154527] ${className}`}>
+  <button
+    type="button"
+    onClick={onClick}
+    className={`h-[40px] w-full rounded-full bg-[#154527] text-[12px] font-light uppercase leading-none tracking-[0] text-[#FCEFA7] transition hover:bg-[#FCEFA7] hover:text-[#154527] ${className}`}
+  >
     Confirm Payment
   </button>
 );
 
 const MembershipCheckoutPage = () => {
-  const [cartItems, setCartItems] = useState(initialCartItems);
-  const [form, setForm] = useState(initialCheckoutForm);
+  const [cartItems, setCartItems] = useState(getInitialCartItems);
+  const [form, setForm] = useState(getInitialForm);
   const [errors, setErrors] = useState({});
   const [submitMessage, setSubmitMessage] = useState("");
   const total = useMemo(() => cartItems.reduce((sum, item) => sum + item.price, 0), [cartItems]);

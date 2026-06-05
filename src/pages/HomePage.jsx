@@ -20,9 +20,7 @@ const Hero = ({ navigation }) => (
     <div className="absolute inset-0 bg-[#4b4f3f]/10" />
     <F31Header navigation={navigation} />
     <div className="absolute bottom-7 left-4 z-10 md:bottom-36 md:left-12">
-      <h1 className="max-w-[205px] text-[11px] font-light uppercase leading-[1.05] tracking-wide text-[#fff4a8] md:max-w-3xl md:text-[32px] md:leading-none">
-        WHERE PADEL FINDS ITS PULSE
-      </h1>
+      <h1 className="max-w-[205px] text-[11px] font-light uppercase leading-[1.05] tracking-wide text-[#fff4a8] md:max-w-3xl md:text-[32px] md:leading-none">WHERE PADEL FINDS ITS PULSE</h1>
       <div className="mt-2 flex flex-row items-start gap-2 md:mt-5 md:gap-8">
         <BookCourtCta />
         <DownloadAppCta />
@@ -47,9 +45,13 @@ const Locations = ({ locations }) => {
             locations
           </h2>
           <p className="max-w-md text-[13px] font-light leading-[18px] text-epic-green md:mt-12 md:text-[14px] md:leading-6">
-            From outdoor courts built for regions with outdoor seasons, to full-scale indoor clubs designed for year-round play, every Epic location carries its own identity, brought to life through local culture, community, and creative collaboration.
+            From outdoor courts built for regions with outdoor seasons, to full-scale indoor clubs designed for year-round play, every Epic location carries its own identity, brought to life through
+            local culture, community, and creative collaboration.
           </p>
-          <Link to="/find-epic" className="inline-flex h-8 w-full items-center justify-center rounded-full border border-[#154527] px-5 text-[10px] font-light uppercase text-epic-green transition hover:bg-[#154527] hover:text-[#fff4a8] md:mt-14 md:h-11 md:w-fit md:px-8 md:text-[12px] md:font-normal">
+          <Link
+            to="/find-epic"
+            className="inline-flex h-8 w-full items-center justify-center rounded-full border border-[#154527] px-5 text-[10px] font-light uppercase text-epic-green transition hover:bg-[#154527] hover:text-[#fff4a8] md:mt-14 md:h-11 md:w-fit md:px-8 md:text-[12px] md:font-normal"
+          >
             Find a Club Near You
           </Link>
         </div>
@@ -76,8 +78,13 @@ const LocationCard = ({ location, activeImageIndex = 0, onNext }) => {
     <article className="group relative w-full shrink-0 md:w-[calc((100vw-96px-48px)/3)] 2xl:w-[calc((1340px-48px)/3)]">
       <RotatingImage images={cardImages} alt={location.city} activeIndex={activeImageIndex} className="aspect-[393/478] bg-[#e5e2d8] md:aspect-[1.02]" />
       <h3 className="mt-5 text-[13px] font-normal uppercase leading-none tracking-[0] text-epic-green md:mt-7 md:text-[20px]">{location.city}</h3>
-      <p className="mt-3 max-w-[285px] text-[11px] font-light leading-[16px] text-epic-green md:min-h-20 md:max-w-none md:text-[14px] md:leading-6">{location.description}</p>
-      <Link to={location.path} className="mt-4 inline-flex h-8 min-w-[180px] items-center justify-center rounded-full border border-[#154527] px-6 text-[10px] font-normal uppercase text-epic-green transition hover:bg-[#154527] hover:text-[#fff4a8] md:mt-5 md:h-10 md:px-8 md:text-[15px]">
+      <p className="mt-3 h-[64px] max-w-[285px] overflow-hidden text-[11px] font-light leading-[16px] text-epic-green md:h-[96px] md:max-w-none md:text-[14px] md:leading-6">
+        {location.description}
+      </p>
+      <Link
+        to={location.path}
+        className="mt-4 inline-flex h-8 min-w-[180px] items-center justify-center rounded-full border border-[#154527] px-6 text-[10px] font-normal uppercase text-epic-green transition hover:bg-[#154527] hover:text-[#fff4a8] md:mt-5 md:h-10 md:px-8 md:text-[15px]"
+      >
         {location.cta}
       </Link>
       {onNext && <MobileNextButton label="Show next location" className="absolute right-0 top-[calc(100%-82px)]" onClick={onNext} />}
@@ -85,7 +92,8 @@ const LocationCard = ({ location, activeImageIndex = 0, onNext }) => {
   );
 };
 
-const homeFacilitiesDescription = "At Epic Padel, the experience goes beyond the court. From premium playing surfaces to modern locker rooms and fitness areas, our spaces are built to move with you, supporting every level of play, before and after the match.";
+const homeFacilitiesDescription =
+  "At Epic Padel, the experience goes beyond the court. From premium playing surfaces to modern locker rooms and fitness areas, our spaces are built to move with you, supporting every level of play, before and after the match.";
 
 const Billboard = () => (
   <section>

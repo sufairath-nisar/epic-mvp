@@ -23,11 +23,11 @@
   }
 
   .text-epic-pink {
-    color: #FAD7D3;
+    color: #fad7d3;
   }
 
   .text-epic-cream {
-    color: #FFFCF2;
+    color: #fffcf2;
   }
 
   .text-epic-green {
@@ -45,7 +45,7 @@ html {
 
 body {
   margin: 0;
-  background: #FFFCF2;
+  background: #fffcf2;
   color: #154527;
   font-family: "Lexend", ui-sans-serif, system-ui, sans-serif;
 }
@@ -134,4 +134,32 @@ a {
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* Vertical plan list: swipe-scroll with no scrollbar on mobile, thin visible
+   scrollbar on desktop. */
+.plan-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.plan-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .plan-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #cfcfcf transparent;
+  }
+
+  .plan-scroll::-webkit-scrollbar {
+    display: block;
+    width: 6px;
+  }
+
+  .plan-scroll::-webkit-scrollbar-thumb {
+    background: #cfcfcf;
+    border-radius: 9999px;
+  }
 }

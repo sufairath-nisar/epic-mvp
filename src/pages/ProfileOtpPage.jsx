@@ -3,6 +3,8 @@ import { X } from "lucide-react";
 import OverlayShell from "../components/layout/OverlayShell";
 import { ASSET_PATH } from "../constants/assets";
 import { Link, useRouter } from "../router/RouterProvider";
+import { verifyEmailOTP, loginWithOtp, setAuthToken, extractToken } from "../api/authApi";
+import { getProfileDetails } from "../utils/profileFlow";
 
 const OTP_LENGTH = 4;
 const EXPIRY_SECONDS = 323; // 5:23
@@ -17,6 +19,7 @@ const ProfileOtpPage = () => {
   const { navigate } = useRouter();
   const [otp, setOtp] = useState(() => Array(OTP_LENGTH).fill(""));
   const [error, setError] = useState("");
+  const [verifying, setVerifying] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(EXPIRY_SECONDS);
   const inputsRef = useRef([]);
 
@@ -53,8 +56,9 @@ const ProfileOtpPage = () => {
     }
   };
 
-  const handleVerify = (event) => {
+  const handleVerify = async (event) => {
     event.preventDefault();
+    if (verifying) return;
 
     if (otp.some((digit) => digit === "")) {
       setError("Please enter the 4-digit code.");
@@ -62,6 +66,37 @@ const ProfileOtpPage = () => {
     }
 
     setError("");
+
+    const details = getProfileDetails();
+    const code = otp.join("");
+
+    // Verify against the API based on how the OTP was requested:
+    //   email login  -> verifyEmailOTP only
+    //   signup       -> verify BOTH email and phone
+    let verifyRequest = null;
+    if (details.otpFlow === "both") {
+      verifyRequest = () => Promise.all([verifyEmailOTP({ email: details.email, otp: code }), loginWithOtp({ phone: details.phone, country: details.country, otp: code })]);
+    } else if (details.otpFlow === "email" && details.email) {
+      verifyRequest = () => verifyEmailOTP({ email: details.email, otp: code });
+    }
+
+    if (verifyRequest) {
+      setVerifying(true);
+      try {
+        const response = await verifyRequest();
+        const token = Array.isArray(response) ? (extractToken(response[0]) ?? extractToken(response[1])) : extractToken(response);
+        if (token) {
+          setAuthToken(token);
+        }
+        navigate("/account");
+      } catch (verifyError) {
+        setError(verifyError.message || "Invalid or expired OTP.");
+      } finally {
+        setVerifying(false);
+      }
+      return;
+    }
+
     navigate("/account");
   };
 
@@ -82,8 +117,7 @@ const ProfileOtpPage = () => {
               account
             </h1>
             <p className="mt-[11px] max-w-none text-[11px] font-light leading-[15px] tracking-[0] text-[#154527] md:mt-[20px] md:max-w-[315px] md:text-[12px]">
-              We&apos;ve sent a verification code to your email{" "}
-              <br className="hidden md:block" />
+              We&apos;ve sent a verification code to your email <br className="hidden md:block" />
               and phone number.
               <br />
               Please enter it below.

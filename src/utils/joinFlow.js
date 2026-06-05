@@ -18,3 +18,11 @@ export const getJoinDetails = () => {
     return {};
   }
 };
+
+export const clearJoinDetails = () => {
+  try {
+    sessionStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // Ignore storage failures.
+  }
+};

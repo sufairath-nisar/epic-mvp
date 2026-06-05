@@ -1,7 +1,18 @@
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import HomePage from "./HomePage";
 import { RouterProvider } from "../router/RouterProvider";
+
+// Keep the home page data deterministic and offline: serve the bundled mock
+// data instead of hitting the live API. This isolates the component test from
+// the network and from changing backend content.
+vi.mock("../api/homepageApi", async () => {
+  const { f31HomepageData } = await import("../data/f31Homepage");
+  return { getHomepageData: () => Promise.resolve(f31HomepageData) };
+});
+
+// The header loads court names for its "find epic" submenu; stub it offline.
+vi.mock("../hooks/useLocations", () => ({ useLocations: () => [] }));
 
 // Smoke tests for the home page. These only render the page in memory and
 // assert that key content shows up — they never modify app code or design.

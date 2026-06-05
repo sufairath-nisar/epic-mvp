@@ -5,17 +5,10 @@ import PillDropdown from "../components/common/PillDropdown";
 import { ASSET_PATH } from "../constants/assets";
 import { Link, useRouter } from "../router/RouterProvider";
 import { getJoinDetails } from "../utils/joinFlow";
+import { saveSelectedMembership } from "../utils/membershipFlow";
+import { useMembershipPackages } from "../hooks/useMembershipPackages";
 
 const locations = ["Charlotte, NC", "Tyson's Corner, VA", "Milwaukee, WI"];
-
-const membershipPlans = [
-  { id: "pay-to-play", title: "Pay-to-Play", price: "$0" },
-  { id: "founding", title: "Founding", price: "$149" },
-  { id: "platinum", title: "Platinum", price: "$120" },
-  { id: "junior", title: "Junior", price: "$59" }
-];
-
-const DEFAULT_PLAN = "pay-to-play";
 
 const PlanOption = ({ plan, selected, onSelect }) => (
   <button
@@ -25,11 +18,7 @@ const PlanOption = ({ plan, selected, onSelect }) => (
       selected ? "border-[#FCEFA7]" : "border-transparent hover:border-[#e4e4e4]"
     }`}
   >
-    <span
-      className={`flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full border ${
-        selected ? "border-[#FCEFA7] bg-[#FCEFA7]" : "border-[#cfcfcf] bg-white"
-      }`}
-    >
+    <span className={`flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full border ${selected ? "border-[#FCEFA7] bg-[#FCEFA7]" : "border-[#cfcfcf] bg-white"}`}>
       {selected ? <span className="h-[6px] w-[6px] rounded-full bg-white" /> : null}
     </span>
     <span className="ml-[14px]">
@@ -49,9 +38,7 @@ const SuccessModal = () => (
       <div className="mx-auto flex h-[58px] w-[58px] items-center justify-center rounded-full bg-[#154527] text-[#FCEFA7]">
         <Check size={28} strokeWidth={2.4} />
       </div>
-      <h2 className="font-display mt-[22px] text-[26px] font-bold lowercase leading-none tracking-[0] text-[#154527]">
-        you&apos;re all set!
-      </h2>
+      <h2 className="font-display mt-[22px] text-[26px] font-bold lowercase leading-none tracking-[0] text-[#154527]">you&apos;re all set!</h2>
       <p className="mt-[12px] text-[12px] font-light leading-[17px] tracking-[0] text-[#547257]">
         You&apos;re on the Pay-to-Play plan.
         <br />
@@ -64,9 +51,16 @@ const SuccessModal = () => (
 const JoinMembershipPage = () => {
   const { navigate } = useRouter();
   const firstName = getJoinDetails().firstName?.trim() || "{first name}";
+  const { packages } = useMembershipPackages();
   const [location, setLocation] = useState(locations[0]);
-  const [selectedPlan, setSelectedPlan] = useState(DEFAULT_PLAN);
+  const [selectedPlanId, setSelectedPlanId] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // The API's default package behaves like the old "pay-to-play": selecting it
+  // completes without checkout; any other plan goes to checkout.
+  const defaultPlanId = packages.find((plan) => plan.isDefault)?.id ?? packages[0]?.id ?? null;
+  const activePlanId = selectedPlanId ?? defaultPlanId;
+  const isDefaultSelected = activePlanId === defaultPlanId;
 
   useEffect(() => {
     if (!showSuccess) {
@@ -78,11 +72,15 @@ const JoinMembershipPage = () => {
   }, [showSuccess, navigate]);
 
   const handleContinue = () => {
-    if (selectedPlan === DEFAULT_PLAN) {
+    if (isDefaultSelected) {
       setShowSuccess(true);
       return;
     }
 
+    const selectedPlan = packages.find((plan) => plan.id === activePlanId);
+    if (selectedPlan) {
+      saveSelectedMembership(selectedPlan);
+    }
     navigate("/join-epic/membership/checkout");
   };
 
@@ -124,9 +122,9 @@ const JoinMembershipPage = () => {
             You are now on a Pay-to-Play default plan. Select your prefered membership plan to unlock more perks, zero booking fees and access to exclusive events.
           </p>
 
-          <div className="mt-[13px] grid gap-[14px] md:mt-[3px] md:gap-[8px]">
-            {membershipPlans.map((plan) => (
-              <PlanOption key={plan.id} plan={plan} selected={selectedPlan === plan.id} onSelect={setSelectedPlan} />
+          <div className="plan-scroll mt-[13px] grid max-h-[300px] gap-[14px] overflow-y-auto pr-1 md:mt-[3px] md:max-h-[210px] md:gap-[8px]">
+            {packages.map((plan) => (
+              <PlanOption key={plan.id} plan={plan} selected={activePlanId === plan.id} onSelect={setSelectedPlanId} />
             ))}
           </div>
 
@@ -135,7 +133,7 @@ const JoinMembershipPage = () => {
             onClick={handleContinue}
             className="mt-[24px] h-[48px] w-full rounded-full bg-[#154527] text-[13px] font-light uppercase leading-none tracking-[0] text-[#FCEFA7] transition hover:bg-[#FCEFA7] hover:text-[#154527] md:absolute md:inset-x-[58px] md:bottom-[54px] md:mt-0 md:h-[37px] md:w-auto"
           >
-            {selectedPlan === DEFAULT_PLAN ? "Continue" : "Checkout"}
+            {isDefaultSelected ? "Continue" : "Checkout"}
           </button>
         </section>
       </div>

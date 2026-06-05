@@ -3,6 +3,8 @@ import { X } from "lucide-react";
 import OverlayShell from "../components/layout/OverlayShell";
 import { ASSET_PATH } from "../constants/assets";
 import { Link, useRouter } from "../router/RouterProvider";
+import { loginWithOtp, verifyEmailOTP, setAuthToken, extractToken } from "../api/authApi";
+import { getJoinDetails } from "../utils/joinFlow";
 
 const OTP_LENGTH = 4;
 const EXPIRY_SECONDS = 323; // 5:23
@@ -17,6 +19,7 @@ const VerifyOtpPage = () => {
   const { navigate } = useRouter();
   const [otp, setOtp] = useState(() => Array(OTP_LENGTH).fill(""));
   const [error, setError] = useState("");
+  const [verifying, setVerifying] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(EXPIRY_SECONDS);
   const inputsRef = useRef([]);
 
@@ -53,8 +56,9 @@ const VerifyOtpPage = () => {
     }
   };
 
-  const handleVerify = (event) => {
+  const handleVerify = async (event) => {
     event.preventDefault();
+    if (verifying) return;
 
     if (otp.some((digit) => digit === "")) {
       setError("Please enter the 4-digit code.");
@@ -62,6 +66,28 @@ const VerifyOtpPage = () => {
     }
 
     setError("");
+
+    const { email, phone, country } = getJoinDetails();
+    const code = otp.join("");
+
+    // Signup verifies both the email OTP and the phone OTP.
+    if (email || phone) {
+      setVerifying(true);
+      try {
+        const [emailRes, phoneRes] = await Promise.all([verifyEmailOTP({ email, otp: code }), loginWithOtp({ phone, country, otp: code })]);
+        const token = extractToken(emailRes) ?? extractToken(phoneRes);
+        if (token) {
+          setAuthToken(token);
+        }
+        navigate("/join-epic/membership");
+      } catch (verifyError) {
+        setError(verifyError.message || "Invalid or expired OTP.");
+      } finally {
+        setVerifying(false);
+      }
+      return;
+    }
+
     navigate("/join-epic/membership");
   };
 
@@ -82,8 +108,7 @@ const VerifyOtpPage = () => {
               account
             </h1>
             <p className="mt-[11px] max-w-none text-[11px] font-light leading-[15px] tracking-[0] text-[#154527] md:mt-[20px] md:max-w-[315px] md:text-[12px]">
-              We&apos;ve sent a verification code to your email{" "}
-              <br className="hidden md:block" />
+              We&apos;ve sent a verification code to your email <br className="hidden md:block" />
               and phone number.
               <br />
               Please enter it below.

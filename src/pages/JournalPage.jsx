@@ -3,10 +3,10 @@ import { ChevronDown } from "lucide-react";
 import AutoCarousel from "../components/common/AutoCarousel";
 import F31Header from "../components/f31/F31Header";
 import SiteFooter from "../components/layout/SiteFooter";
-import { ASSET_PATH } from "../constants/assets";
+import { ASSET_PATH, resolveAssetUrl } from "../constants/assets";
 import { mainNavigation } from "../data/routes";
 import { Link } from "../router/RouterProvider";
-import { blogs } from "../data/journal";
+import { getBlogList } from "../api/blogApi";
 
 const sortOptions = [
   { value: "newest", label: "Newest first" },
@@ -55,9 +55,7 @@ const news = [
 ];
 
 const SectionHeading = ({ children, className = "" }) => (
-  <h2 className={`font-display text-[46px] font-bold lowercase leading-[0.95] tracking-[0] text-[#FAD7D3] md:text-[86px] md:leading-[1.02] ${className}`}>
-    {children}
-  </h2>
+  <h2 className={`font-display text-[46px] font-bold lowercase leading-[0.95] tracking-[0] text-[#FAD7D3] md:text-[86px] md:leading-[1.02] ${className}`}>{children}</h2>
 );
 
 const Dropdown = ({ label, value, options, onSelect, className = "" }) => {
@@ -119,9 +117,7 @@ const MobileFilters = ({ sortValue, filterValue, onSort, onFilter, onClear }) =>
   }, [open]);
 
   const optionClass = (active) =>
-    `block w-full px-[20px] py-[10px] text-left text-[12px] lowercase tracking-[0] transition hover:bg-[#D9D9D933] ${
-      active ? "font-normal text-[#154527]" : "font-light text-[#547257]"
-    }`;
+    `block w-full px-[20px] py-[10px] text-left text-[12px] lowercase tracking-[0] transition hover:bg-[#D9D9D933] ${active ? "font-normal text-[#154527]" : "font-light text-[#547257]"}`;
 
   const headingClass = "px-[20px] pb-[4px] pt-[12px] text-[10px] font-normal uppercase tracking-[0.12em] text-[#a0a0a0]";
 
@@ -180,16 +176,35 @@ const JournalPage = () => {
   const [flipped, setFlipped] = useState(false);
   const [sortValue, setSortValue] = useState(null);
   const [filterValue, setFilterValue] = useState(null);
+  // API content only — start empty and fill once the request resolves (no local
+  // blogs shown first). `loaded` guards the empty-state message during loading.
+  const [blogList, setBlogList] = useState([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const timer = window.setInterval(() => setFlipped((current) => !current), 2500);
     return () => window.clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    let mounted = true;
+    getBlogList()
+      .then((list) => {
+        if (mounted) setBlogList(list);
+      })
+      .catch((error) => console.error("Failed to load blogs from API:", error))
+      .finally(() => {
+        if (mounted) setLoaded(true);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   const sortLabel = sortOptions.find((option) => option.value === sortValue)?.label;
   const filterLabel = filterOptions.find((option) => option.value === filterValue)?.label;
 
-  const visibleBlogs = blogs
+  const visibleBlogs = blogList
     .filter((blog) => !filterValue || blog.category === filterValue)
     .sort((a, b) => {
       if (!sortValue) return 0;
@@ -215,18 +230,10 @@ const JournalPage = () => {
           </SectionHeading>
 
           <div className="mt-[18px] md:mt-[50px]">
-            <p className="text-[12px] font-light leading-[16px] tracking-[0] text-[#547257] md:text-[14px] md:leading-[20px]">
-              Insights, tips, and stories from the world of epic.
-            </p>
+            <p className="text-[12px] font-light leading-[16px] tracking-[0] text-[#547257] md:text-[14px] md:leading-[20px]">Insights, tips, and stories from the world of epic.</p>
             <div className="mt-[18px] md:mt-[42px]">
               {/* Mobile: single combined dropdown */}
-              <MobileFilters
-                sortValue={sortValue}
-                filterValue={filterValue}
-                onSort={setSortValue}
-                onFilter={setFilterValue}
-                onClear={resetFilters}
-              />
+              <MobileFilters sortValue={sortValue} filterValue={filterValue} onSort={setSortValue} onFilter={setFilterValue} onClear={resetFilters} />
 
               {/* Desktop: three separate dropdowns */}
               <div className="hidden md:flex md:gap-[18px]">
@@ -250,34 +257,26 @@ const JournalPage = () => {
       <section className="mx-auto max-w-[1440px] px-[32px] pt-[26px] md:px-[50px] md:pt-[44px]">
         <div className="grid gap-x-[20px] gap-y-[32px] md:grid-cols-2 md:gap-y-[48px] md:gap-x-[30px]">
           {visibleBlogs.map((blog) => (
-            <Link key={blog.slug} to={`/our-journal/blog/${blog.slug}`} className="group block">
+            <Link key={blog.slug} to={`/our-journal/blog/${encodeURIComponent(blog.slug)}`} className="group block">
               <div className="relative aspect-[16/10] w-full overflow-hidden">
                 <img
-                  src={`${ASSET_PATH}${blog.image}`}
+                  src={resolveAssetUrl(blog.image)}
                   alt={blog.title}
                   className={`h-full w-full object-cover transition-opacity duration-1000 group-hover:opacity-0 ${flipped ? "opacity-0" : "opacity-100"}`}
                 />
-                <div className={`absolute inset-0 flex flex-col items-center justify-center bg-[#D9D9D933] px-[40px] text-center transition-opacity duration-1000 group-hover:opacity-100 ${flipped ? "opacity-100" : "opacity-0"}`}>
-                  <p className="text-[13px] font-normal leading-[19px] tracking-[0] text-[#154527] md:text-[14px] md:leading-[20px]">
-                    {blog.description}
-                  </p>
-                  <span className="mt-[24px] text-[12px] font-normal uppercase tracking-[0.12em] text-[#FAD7D3] md:mt-[28px]">
-                    Read more
-                  </span>
+                <div
+                  className={`absolute inset-0 flex flex-col items-center justify-center bg-[#D9D9D933] px-[40px] text-center transition-opacity duration-1000 group-hover:opacity-100 ${flipped ? "opacity-100" : "opacity-0"}`}
+                >
+                  <p className="line-clamp-3 text-[13px] font-normal leading-[19px] tracking-[0] text-[#154527] md:text-[14px] md:leading-[20px]">{blog.description}</p>
+                  <span className="mt-[24px] text-[12px] font-normal uppercase tracking-[0.12em] text-[#FAD7D3] md:mt-[28px]">Read more</span>
                 </div>
               </div>
-              <p className="mt-[14px] text-[12px] font-light leading-none tracking-[0] text-[#547257] md:mt-[16px]">
-                {blog.date}
-              </p>
-              <h3 className="mt-[8px] text-[13px] font-normal uppercase leading-[1.4] tracking-[0] text-[#547257] md:text-[14px] md:mt-[3px]">
-                {blog.title}
-              </h3>
+              <p className="mt-[14px] text-[12px] font-light leading-none tracking-[0] text-[#547257] md:mt-[16px]">{blog.date}</p>
+              <h3 className="mt-[8px] text-[13px] font-normal uppercase leading-[1.4] tracking-[0] text-[#547257] md:text-[14px] md:mt-[3px]">{blog.title}</h3>
             </Link>
           ))}
         </div>
-        {visibleBlogs.length === 0 ? (
-          <p className="py-[40px] text-center text-[13px] font-light tracking-[0] text-[#547257]">No blogs match the selected filter.</p>
-        ) : null}
+        {loaded && visibleBlogs.length === 0 ? <p className="py-[40px] text-center text-[13px] font-light tracking-[0] text-[#547257]">No blogs match the selected filter.</p> : null}
       </section>
 
       {/* epic in the news */}

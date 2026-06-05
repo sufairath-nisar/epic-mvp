@@ -1,29 +1,20 @@
 import { useEffect, useState } from "react";
 
+// Toggles the active image index for a set of cards. All cards switch together
+// on each interval (no per-card wait). Returns an array of indexes (0 or 1),
+// one per item, so existing consumers can keep reading activeIndexes[i].
 export const useSequentialImagePairs = (itemCount, interval = 2400) => {
-  const [visibleImages, setVisibleImages] = useState(() => Array.from({ length: itemCount }, () => 0));
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     if (!itemCount) return undefined;
 
-    setVisibleImages(Array.from({ length: itemCount }, () => 0));
-
-    let currentIndex = 0;
-    let nextImage = 1;
-
     const timer = window.setInterval(() => {
-      setVisibleImages((current) => current.map((value, index) => (index === currentIndex ? nextImage : value)));
-
-      currentIndex += 1;
-
-      if (currentIndex >= itemCount) {
-        currentIndex = 0;
-        nextImage = nextImage === 1 ? 0 : 1;
-      }
+      setActiveIndex((current) => (current === 1 ? 0 : 1));
     }, interval);
 
     return () => window.clearInterval(timer);
   }, [itemCount, interval]);
 
-  return visibleImages;
+  return Array.from({ length: itemCount }, () => activeIndex);
 };

@@ -3,7 +3,8 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import OverlayShell from "../components/layout/OverlayShell";
 import { ASSET_PATH } from "../constants/assets";
 import { Link, useRouter } from "../router/RouterProvider";
-import { clearProfileDetails, getProfileDetails, saveProfileDetails } from "../utils/profileFlow";
+import { saveProfileDetails } from "../utils/profileFlow";
+import { clearSession, getCurrentUser } from "../utils/session";
 
 const menuItems = [
   { label: "INFO", slug: "info" },
@@ -79,12 +80,7 @@ const InfoContent = ({ details }) => (
     </div>
 
     {/* Desktop edit (bottom-right) */}
-    <Link
-      to="/account/edit"
-      scroll={false}
-      aria-label="Edit"
-      className="absolute bottom-[58px] right-[78px] hidden transition hover:opacity-70 md:block"
-    >
+    <Link to="/account/edit" scroll={false} aria-label="Edit" className="absolute bottom-[58px] right-[78px] hidden transition hover:opacity-70 md:block">
       <img src={`${ASSET_PATH}edit-icon.svg`} alt="Edit" className="h-[20px] w-[20px]" />
     </Link>
   </>
@@ -180,11 +176,11 @@ const AccountPage = ({ section = "menu" }) => {
   const displaySlug = isEditing ? "info" : hovered || routedSlug;
   const displayItem = menuItems.find((item) => item.slug === displaySlug) || menuItems[0];
   const isInfo = displaySlug === "info";
-  const details = getProfileDetails();
+  const details = getCurrentUser();
   const greeting = `Hi ${details.firstName || ""}`.trim();
 
   const handleLogout = () => {
-    clearProfileDetails();
+    clearSession();
     navigate("/");
   };
 
@@ -195,31 +191,18 @@ const AccountPage = ({ section = "menu" }) => {
         <Link
           to="/"
           aria-label="Close"
-          className={`absolute right-[24px] top-[26px] z-10 text-[#154527] transition hover:text-[#FAD7D3] md:right-[45px] md:top-[31px] ${
-            isMenu ? "block" : "hidden md:block"
-          }`}
+          className={`absolute right-[24px] top-[26px] z-10 text-[#154527] transition hover:text-[#FAD7D3] md:right-[45px] md:top-[31px] ${isMenu ? "block" : "hidden md:block"}`}
         >
           <X size={20} strokeWidth={2} />
         </Link>
 
         {/* Sidebar / menu */}
-        <aside
-          className={`${
-            isMenu ? "flex" : "hidden"
-          } flex-col bg-white px-[33px] pb-[40px] pt-[34px] md:flex md:h-[563px] md:px-[34px] md:pb-[40px] md:pt-[55px]`}
-        >
-          <p className="font-display text-[30px] font-bold leading-none tracking-[0] text-[#FAD7D3] md:text-[26px]">
-            {greeting}
-          </p>
+        <aside className={`${isMenu ? "flex" : "hidden"} flex-col bg-white px-[33px] pb-[40px] pt-[34px] md:flex md:h-[563px] md:px-[34px] md:pb-[40px] md:pt-[55px]`}>
+          <p className="font-display text-[30px] font-bold leading-none tracking-[0] text-[#FAD7D3] md:text-[26px]">{greeting}</p>
 
           <nav className="mt-[26px] md:mt-[7px]" onMouseLeave={() => setHovered(null)}>
             {menuItems.map((item) => (
-              <MenuRow
-                key={item.slug}
-                item={item}
-                active={item.slug === displaySlug}
-                onHover={() => setHovered(item.slug)}
-              />
+              <MenuRow key={item.slug} item={item} active={item.slug === displaySlug} onHover={() => setHovered(item.slug)} />
             ))}
           </nav>
 
@@ -233,11 +216,7 @@ const AccountPage = ({ section = "menu" }) => {
         </aside>
 
         {/* Detail panel */}
-        <section
-          className={`${
-            isMenu ? "hidden" : "block"
-          } relative flex-1 bg-[#D9D9D933] px-[24px] pb-[40px] pt-[18px] md:block md:h-[563px] md:px-[32px] md:pb-0 md:pt-[60px]`}
-        >
+        <section className={`${isMenu ? "hidden" : "block"} relative flex-1 bg-[#D9D9D933] px-[24px] pb-[40px] pt-[18px] md:block md:h-[563px] md:px-[32px] md:pb-0 md:pt-[60px]`}>
           {/* Mobile top bar: back + edit */}
           <div className="flex items-center justify-between md:hidden">
             <Link to={isEditing ? "/account/info" : "/account"} aria-label="Back" className="text-[#154527]">
@@ -250,15 +229,7 @@ const AccountPage = ({ section = "menu" }) => {
             ) : null}
           </div>
 
-          {isInfo ? (
-            isEditing ? (
-              <EditContent details={details} onSaved={() => navigate("/account/info")} />
-            ) : (
-              <InfoContent details={details} />
-            )
-          ) : (
-            <PlaceholderContent label={displayItem.label} />
-          )}
+          {isInfo ? isEditing ? <EditContent details={details} onSaved={() => navigate("/account/info")} /> : <InfoContent details={details} /> : <PlaceholderContent label={displayItem.label} />}
         </section>
       </div>
     </OverlayShell>

@@ -1,22 +1,27 @@
+import { lazy, Suspense } from "react";
 import HomePage from "./pages/HomePage";
 import { RouterProvider, useRouter } from "./router/RouterProvider";
-import StoryPage from "./pages/StoryPage";
-import FindEpicPage from "./pages/FindEpicPage";
-import JournalPage from "./pages/JournalPage";
-import ArticlePage from "./pages/ArticlePage";
-import JoinEpicPage from "./pages/JoinEpicPage";
-import VerifyOtpPage from "./pages/VerifyOtpPage";
-import JoinMembershipPage from "./pages/JoinMembershipPage";
-import WearEpicPage from "./pages/WearEpicPage";
-import ProductPage from "./pages/ProductPage";
-import CartPage from "./pages/CartPage";
-import BookingPage from "./pages/BookingPage";
-import LoginPage from "./pages/LoginPage";
-import AccountPage from "./pages/AccountPage";
-import ProfileSignupPage from "./pages/ProfileSignupPage";
-import ProfileOtpPage from "./pages/ProfileOtpPage";
-import InvestmentsPage from "./pages/InvestmentsPage";
-import MembershipCheckoutPage from "./pages/MembershipCheckoutPage";
+
+// Route-level code splitting: each page is fetched only when its route is
+// visited, shrinking the initial bundle. HomePage stays eager so the landing
+// page paints immediately without a loading flash.
+const StoryPage = lazy(() => import("./pages/StoryPage"));
+const FindEpicPage = lazy(() => import("./pages/FindEpicPage"));
+const JournalPage = lazy(() => import("./pages/JournalPage"));
+const ArticlePage = lazy(() => import("./pages/ArticlePage"));
+const JoinEpicPage = lazy(() => import("./pages/JoinEpicPage"));
+const VerifyOtpPage = lazy(() => import("./pages/VerifyOtpPage"));
+const JoinMembershipPage = lazy(() => import("./pages/JoinMembershipPage"));
+const WearEpicPage = lazy(() => import("./pages/WearEpicPage"));
+const ProductPage = lazy(() => import("./pages/ProductPage"));
+const CartPage = lazy(() => import("./pages/CartPage"));
+const BookingPage = lazy(() => import("./pages/BookingPage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const AccountPage = lazy(() => import("./pages/AccountPage"));
+const ProfileSignupPage = lazy(() => import("./pages/ProfileSignupPage"));
+const ProfileOtpPage = lazy(() => import("./pages/ProfileOtpPage"));
+const InvestmentsPage = lazy(() => import("./pages/InvestmentsPage"));
+const MembershipCheckoutPage = lazy(() => import("./pages/MembershipCheckoutPage"));
 
 const AppRoutes = () => {
   const { path } = useRouter();
@@ -49,10 +54,16 @@ const AppRoutes = () => {
   return <HomePage />;
 };
 
+// Shown briefly while a lazily-loaded page chunk downloads. Matches the app
+// background so there's no jarring flash.
+const PageFallback = () => <div className="min-h-screen bg-[#FFFCF2]" />;
+
 const App = () => {
   return (
     <RouterProvider>
-      <AppRoutes />
+      <Suspense fallback={<PageFallback />}>
+        <AppRoutes />
+      </Suspense>
     </RouterProvider>
   );
 };

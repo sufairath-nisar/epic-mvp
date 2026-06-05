@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import OverlayShell from "../components/layout/OverlayShell";
 import { ASSET_PATH } from "../constants/assets";
 import { Link, useRouter } from "../router/RouterProvider";
+import { loginWithEmail } from "../api/authApi";
+import { saveProfileDetails } from "../utils/profileFlow";
+import { isLoggedIn } from "../utils/session";
 
 const initialForm = {
   email: "",
@@ -60,7 +63,10 @@ const LoginInput = ({ error, label, name, onChange, placeholder, type, value }) 
 );
 
 const SocialButton = ({ children }) => (
-  <button type="button" className="flex h-[44px] flex-1 items-center justify-center rounded-full border border-[#dddddd] bg-white text-[12px] font-light leading-none tracking-[0] text-[#111111] transition hover:border-[#154527] md:h-[30px] md:w-[164px] md:flex-none">
+  <button
+    type="button"
+    className="flex h-[44px] flex-1 items-center justify-center rounded-full border border-[#dddddd] bg-white text-[12px] font-light leading-none tracking-[0] text-[#111111] transition hover:border-[#154527] md:h-[30px] md:w-[164px] md:flex-none"
+  >
     {children}
   </button>
 );
@@ -70,6 +76,12 @@ const LoginPage = () => {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  // Already signed in? Skip login and go straight to the account view.
+  useEffect(() => {
+    if (isLoggedIn()) navigate("/account");
+  }, [navigate]);
 
   const handleChange = (field, value) => {
     const nextForm = { ...form, [field]: value };
@@ -82,8 +94,10 @@ const LoginPage = () => {
     setStatus("");
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    if (submitting) return;
+
     const nextErrors = validateLoginForm(form);
     setErrors(nextErrors);
 
@@ -92,8 +106,21 @@ const LoginPage = () => {
       return;
     }
 
-    setStatus("OTP sent successfully.");
-    navigate("/profile/otp");
+    const email = form.email.trim();
+    setSubmitting(true);
+    setStatus("Sending OTP...");
+
+    try {
+      const response = await loginWithEmail({ email, password: form.password });
+      // Carry the email + flow marker so the OTP page can verify against the API.
+      saveProfileDetails({ email, otpFlow: "email" });
+      setStatus(response?.message || "OTP sent successfully.");
+      navigate("/profile/otp");
+    } catch (error) {
+      setStatus(error.message || "Unable to send OTP. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -141,7 +168,10 @@ const LoginPage = () => {
               />
             ))}
 
-            <button type="submit" className="mt-[13px] h-[48px] w-full rounded-full bg-[#154527] text-[12px] font-light uppercase leading-none tracking-[0] text-[#FCEFA7] transition hover:bg-[#FCEFA7] hover:text-[#154527] md:h-[37px]">
+            <button
+              type="submit"
+              className="mt-[13px] h-[48px] w-full rounded-full bg-[#154527] text-[12px] font-light uppercase leading-none tracking-[0] text-[#FCEFA7] transition hover:bg-[#FCEFA7] hover:text-[#154527] md:h-[37px]"
+            >
               Log in
             </button>
 

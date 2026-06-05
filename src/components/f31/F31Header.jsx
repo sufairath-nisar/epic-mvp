@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { ASSET_PATH } from "../../constants/assets";
 import { Link, useRouter } from "../../router/RouterProvider";
+import { useLocations } from "../../hooks/useLocations";
+import { isLoggedIn } from "../../utils/session";
 
 const F31Header = ({ navigation, tone = "dark", floating = true }) => {
   const isLight = tone === "light";
@@ -19,12 +21,26 @@ const F31Header = ({ navigation, tone = "dark", floating = true }) => {
   const isActivePath = (itemPath) => path === itemPath || (itemPath !== "/" && path.startsWith(`${itemPath}/`));
   const isWeAreEpicActive = path === "/our-story" || path === "/investments" || path === "/our-journal";
   const isProfileActive = path === "/signin" || path.startsWith("/profile") || path.startsWith("/account");
+  // Registered/logged-in users go straight to their account view; new users
+  // go to the sign-up page.
+  const loggedIn = isLoggedIn();
+  const accountPath = loggedIn ? "/account" : "/signin";
+  // Once signed in, hide "join epic" — it's the same action as account sign-up.
+  const visibleNavigation = loggedIn ? navigation.filter((item) => item.path !== "/join-epic") : navigation;
   const weAreEpicLinks = [
     { label: "our story", path: "/our-story" },
     { label: "our investments", path: "/investments" },
     { label: "our journal", path: "/our-journal" }
   ];
-  const primaryMobileLinks = navigation.filter((item) => item.path !== "/our-story");
+  // Court names from the API become the "find epic" submenu; every item links
+  // back to the same Find Epic page.
+  const courtLinks = useLocations().map((court) => ({ label: court.city, id: court.id }));
+  const hasCourtLinks = courtLinks.length > 0;
+  const [findEpicMode, setFindEpicMode] = useState("closed");
+  const [isMobileFindEpicOpen, setIsMobileFindEpicOpen] = useState(false);
+  const findEpicRef = useRef(null);
+  const isFindEpicOpen = findEpicMode !== "closed";
+  const primaryMobileLinks = visibleNavigation.filter((item) => item.path !== "/our-story" && item.path !== "/find-epic");
 
   useEffect(() => {
     if (!isDesktopSubmenuOpen) return undefined;
@@ -38,6 +54,19 @@ const F31Header = ({ navigation, tone = "dark", floating = true }) => {
     document.addEventListener("pointerdown", handlePointerDown);
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, [isDesktopSubmenuOpen]);
+
+  useEffect(() => {
+    if (!isFindEpicOpen) return undefined;
+
+    const handlePointerDown = (event) => {
+      if (!findEpicRef.current?.contains(event.target)) {
+        setFindEpicMode("closed");
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [isFindEpicOpen]);
 
   return (
     <header className={headerClass}>
@@ -60,48 +89,83 @@ const F31Header = ({ navigation, tone = "dark", floating = true }) => {
         </Link>
 
         <div className="font-display ml-auto hidden items-center gap-16 text-[15px] font-bold lowercase md:flex">
-          {navigation.map((item) => (
-            item.path === "/our-story" ? (
-              <div
-                key={item.label}
-                ref={desktopSubmenuRef}
-                className="relative"
-                onMouseEnter={() => setDesktopSubmenuMode((current) => (current === "closed" ? "hover" : current))}
-                onMouseLeave={() => setDesktopSubmenuMode((current) => (current === "hover" ? "closed" : current))}
-              >
-                <button
-                  type="button"
-                  aria-expanded={isDesktopSubmenuOpen}
-                  className={`lowercase transition ${navHover} ${isWeAreEpicActive || isDesktopSubmenuOpen ? navActive : ""}`}
-                  onClick={() => setDesktopSubmenuMode((current) => (current === "click" ? "closed" : "click"))}
+          {visibleNavigation.map((item) => {
+            if (item.path === "/our-story") {
+              return (
+                <div
+                  key={item.label}
+                  ref={desktopSubmenuRef}
+                  className="relative"
+                  onMouseEnter={() => setDesktopSubmenuMode((current) => (current === "closed" ? "hover" : current))}
+                  onMouseLeave={() => setDesktopSubmenuMode((current) => (current === "hover" ? "closed" : current))}
                 >
-                  {item.label}
-                </button>
-                {isDesktopSubmenuOpen && (
-                  <div className="absolute left-0 top-full z-30 mt-3 w-[170px] text-[#FAD7D3]">
-                    <nav className="grid gap-2 font-display text-[15px] font-bold leading-none">
-                      {weAreEpicLinks.map((link) => (
-                        <Link
-                          key={link.path}
-                          to={link.path}
-                          className={`w-fit transition ${navHover} ${isActivePath(link.path) ? navActive : ""}`}
-                          onClick={() => setDesktopSubmenuMode("closed")}
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
-                    </nav>
-                  </div>
-                )}
-              </div>
-            ) : (
+                  <button
+                    type="button"
+                    aria-expanded={isDesktopSubmenuOpen}
+                    className={`lowercase transition ${navHover} ${isWeAreEpicActive || isDesktopSubmenuOpen ? navActive : ""}`}
+                    onClick={() => setDesktopSubmenuMode((current) => (current === "click" ? "closed" : "click"))}
+                  >
+                    {item.label}
+                  </button>
+                  {isDesktopSubmenuOpen && (
+                    <div className="absolute left-0 top-full z-30 mt-3 w-[170px] text-[#FAD7D3]">
+                      <nav className="grid gap-2 font-display text-[15px] font-bold leading-none">
+                        {weAreEpicLinks.map((link) => (
+                          <Link key={link.path} to={link.path} className={`w-fit transition ${navHover} ${isActivePath(link.path) ? navActive : ""}`} onClick={() => setDesktopSubmenuMode("closed")}>
+                            {link.label}
+                          </Link>
+                        ))}
+                      </nav>
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            if (item.path === "/find-epic" && hasCourtLinks) {
+              return (
+                <div
+                  key={item.label}
+                  ref={findEpicRef}
+                  className="relative"
+                  onMouseEnter={() => setFindEpicMode((current) => (current === "closed" ? "hover" : current))}
+                  onMouseLeave={() => setFindEpicMode((current) => (current === "hover" ? "closed" : current))}
+                >
+                  <button
+                    type="button"
+                    aria-expanded={isFindEpicOpen}
+                    className={`lowercase transition ${navHover} ${isActivePath("/find-epic") || isFindEpicOpen ? navActive : ""}`}
+                    onClick={() => setFindEpicMode((current) => (current === "click" ? "closed" : "click"))}
+                  >
+                    {item.label}
+                  </button>
+                  {isFindEpicOpen && (
+                    <div className="absolute left-0 top-full z-30 mt-3 max-h-[60vh] w-[210px] overflow-y-auto text-[#FAD7D3]">
+                      <nav className="grid gap-2 font-display text-[15px] font-bold leading-none">
+                        {courtLinks.map((court) => (
+                          <Link key={court.id} to="/find-epic" className={`w-fit transition ${navHover}`} onClick={() => setFindEpicMode("closed")}>
+                            {court.label}
+                          </Link>
+                        ))}
+                      </nav>
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            return (
               <Link key={item.label} to={item.path} className={`transition ${navHover} ${isActivePath(item.path) ? navActive : ""}`}>
                 {item.label}
               </Link>
-            )
-          ))}
+            );
+          })}
         </div>
-        <Link to="/signin" aria-label="Profile" className={`justify-self-end transition hover:text-[#154527] active:text-[#154527] md:ml-16 md:block md:justify-self-auto ${isProfileActive ? "text-[#154527]" : textColor}`}>
+        <Link
+          to={accountPath}
+          aria-label="Profile"
+          className={`justify-self-end transition hover:text-[#154527] active:text-[#154527] md:ml-16 md:block md:justify-self-auto ${isProfileActive ? "text-[#154527]" : textColor}`}
+        >
           <span
             aria-hidden="true"
             className="block h-[15px] w-[15px] bg-current md:h-[18px] md:w-[18px]"
@@ -185,6 +249,48 @@ const F31Header = ({ navigation, tone = "dark", floating = true }) => {
               )}
             </div>
 
+            {hasCourtLinks ? (
+              <div>
+                <button
+                  type="button"
+                  aria-expanded={isMobileFindEpicOpen}
+                  className="inline-flex items-center gap-[92px] text-[#fff4a8] transition"
+                  onClick={() => setIsMobileFindEpicOpen((current) => !current)}
+                >
+                  <span>find epic</span>
+                  <ChevronDown className={`transition ${isMobileFindEpicOpen ? "rotate-180" : ""}`} size={17} strokeWidth={2.4} />
+                </button>
+                {isMobileFindEpicOpen && (
+                  <div className="mt-7 grid max-h-[40vh] gap-3 overflow-y-auto text-[#FAD7D3]">
+                    {courtLinks.map((court) => (
+                      <Link
+                        key={court.id}
+                        to="/find-epic"
+                        className="w-fit text-[#FAD7D3] transition"
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          setIsMobileFindEpicOpen(false);
+                        }}
+                      >
+                        {court.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                to="/find-epic"
+                className="w-fit text-[#fff4a8] transition"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setIsMobileFindEpicOpen(false);
+                }}
+              >
+                find epic
+              </Link>
+            )}
+
             {primaryMobileLinks.map((item) => (
               <Link
                 key={item.label}
@@ -199,7 +305,7 @@ const F31Header = ({ navigation, tone = "dark", floating = true }) => {
               </Link>
             ))}
             <Link
-              to="/signin"
+              to={accountPath}
               aria-label="Profile"
               className="fixed bottom-[22px] left-[33px]"
               onClick={() => {
